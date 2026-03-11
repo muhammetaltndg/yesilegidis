@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yeşile Gidiş</title>
+  <style>
+    :root {
+      --bg: #edf7ee;
+      --card: #ffffff;
+      --primary: #2f855a;
+      --primary-dark: #276749;
+      --accent: #81c784;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --danger: #c53030;
+      --gold: #d69e2e;
+      --border: #dfe7df;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f4fbf4 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--primary), #48bb78);
+      color: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 820px;
+      line-height: 1.6;
+      opacity: .95;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    h2, h3 { margin-top: 0; }
+
+    .players {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .player {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fafdf9;
+    }
+
+    .player.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(47,133,90,.12);
+    }
+
+    .player .name {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .stat .label {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button, select {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: .98rem;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .primary { background: var(--primary); color: white; }
+    .secondary { background: #edf2f7; color: var(--text); }
+    .warning { background: var(--gold); color: white; }
+
+    .board-wrap {
+      display: grid;
+      gap: 14px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: #edf7ee;
+      color: var(--primary-dark);
+      border: 1px solid #cde7d0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .tile {
+      min-height: 120px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      background: linear-gradient(180deg, #ffffff 0%, #f9fcf8 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tile.current {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(47,133,90,.12);
+    }
+
+    .tile .num {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      color: #b7c5b8;
+      font-weight: 700;
+      font-size: .92rem;
+    }
+
+    .tile-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      padding-right: 22px;
+    }
+
+    .tile-desc {
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.45;
+    }
+
+    .tokens {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .token {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: .84rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,.15);
+    }
+
+    .log {
+      max-height: 220px;
+      overflow: auto;
+      background: #f8fbf8;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      line-height: 1.5;
+    }
+
+    .log-entry { margin-bottom: 10px; }
+    .log-entry:last-child { margin-bottom: 0; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 20;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-card {
+      width: min(760px, 100%);
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.18);
+      padding: 22px;
+      max-height: 90vh;
+      overflow: auto;
+    }
+
+    .choice-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .choice-btn {
+      text-align: left;
+      width: 100%;
+      background: #f7faf7;
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 16px;
+    }
+
+    .choice-btn strong { display: block; margin-bottom: 6px; }
+    .choice-btn small { color: var(--muted); }
+
+    .winner {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .footnote {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    .test-note {
+      margin-top: 8px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .board { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .board { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>🌿 Yeşile Gidiş</h1>
+      <p>
+        Bu dijital oyunda amaç yalnızca zenginleşmek değil; çevreyi korurken ekonomik dengeyi de sağlamaktır.
+        Her oyuncu 4 çevre puanı ve 400 servet puanı ile başlar. İlk olarak 10 çevre puanına ve 1000 servet puanına ulaşan oyuncu kazanır.
+      </p>
+    </section>
+
+    <div class="grid">
+      <aside class="panel">
+        <h2>Oyuncular</h2>
+        <label for="playerCount"><strong>Oyuncu sayısı:</strong></label>
+        <select id="playerCount">
+          <option value="2">2 oyuncu</option>
+          <option value="3" selected>3 oyuncu</option>
+          <option value="4">4 oyuncu</option>
+        </select>
+
+        <div id="nameInputs" class="players"></div>
+
+        <div class="controls">
+          <button class="primary" id="startBtn">Oyunu Başlat</button>
+          <button class="secondary" id="resetBtn">Sıfırla</button>
+        </div>
+
+        <hr style="margin:18px 0; border:none; border-top:1px solid var(--border);">
+
+        <h3>Tur Bilgisi</h3>
+        <div class="badge" id="turnInfo">Oyun henüz başlamadı</div>
+
+        <div class="controls">
+          <button class="primary" id="rollBtn" disabled>Zar At</button>
+          <button class="warning" id="endTurnBtn" disabled>Turu Bitir</button>
+        </div>
+
+        <div class="players" id="playersPanel"></div>
+      </aside>
+
+      <main class="panel board-wrap">
+        <div class="topline">
+          <h2 style="margin:0;">Oyun Tahtası</h2>
+          <div class="badge" id="diceResult">Zar: -</div>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <h3>Oyun Günlüğü</h3>
+        <div class="log" id="log"></div>
+        <div class="footnote">
+          Not: Bu oyunda seçim kartları oyuncuya karar verdirir; risk kartları ise beklenmedik olayları temsil eder.
+        </div>
+        <div class="test-note">Bu oyun DİJİTALLEŞEN COĞRAFYA GRUBU tarafından hazırlandı.</div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-card" id="modalCard"></div>
+  </div>
+
+  <script>
+    const COLORS = ['#2b6cb0', '#c05621', '#6b46c1', '#2f855a'];
+
+    const boardTiles = [
+      { type: 'allPlayersEnv', title: 'BM Övgüsü', desc: 'Tüm oyuncular +1 çevre puanı alır.' },
+      { type: 'special', title: 'Başkanlık Ödülü', desc: '5 çevre puanından fazlan varsa +100 servet puanı kazan.' },
+      { type: 'chooseTile', title: 'Kart Seç', desc: 'İstersen Risk Kartı, istersen Seçim Kartı çek.' },
+      { type: 'risk', title: 'Risk', desc: 'Risk kartı çek.' },
+      { type: 'choice', title: 'Seçim', desc: 'Seçim kartı çek.' },
+      { type: 'risk', title: 'Risk', desc: 'Risk kartı çek.' },
+      { type: 'choice', title: 'Seçim', desc: 'Seçim kartı çek.' },
+      { type: 'special', title: 'Şiddetli Yağış ve Heyelan', desc: '-75 servet puanı kaybet.' },
+      { type: 'special', title: 'Rekor Hasat', desc: '+100 servet puanı kazan.' },
+      { type: 'special', title: 'Time Dergisi Makalesi', desc: '+1 çevre puanı kazan.' },
+      { type: 'special', title: 'Uluslararası Tatil', desc: 'Bir tur kaçır.' },
+      { type: 'risk', title: 'Risk', desc: 'Risk kartı çek.' },
+      { type: 'choice', title: 'Seçim', desc: 'Seçim kartı çek.' },
+      { type: 'risk', title: 'Risk', desc: 'Risk kartı çek.' },
+      { type: 'choice', title: 'Seçim', desc: 'Seçim kartı çek.' },
+      { type: 'choice', title: 'Seçim', desc: 'Seçim kartı çek.' }
+    ];
+
+    const choiceCards = [
+      {
+        title: 'Tarım Bakanı',
+        text: 'Artan nüfusu besleme baskısı altındasın. Yağmur ormanları üzerinde karar vermen gerekiyor.',
+        options: [
+          { text: 'Yeni tarım alanı açmak için ormanı azalt.', env: -1, wealth: 250 },
+          { text: 'Sanayileşmiş ülkelerden yardım isteyip daha fazla borçlan.', env: 0, wealth: 100 },
+          { text: 'Ormanı savunarak görevden ayrıl.', env: 3, wealth: -200 }
+        ]
+      },
+      {
+        title: 'Amazon’da Maden İşletmesi',
+        text: 'Yeni çevre düzenlemeleri kârını azaltacak. Nasıl hareket edeceksin?',
+        options: [
+          { text: 'Kurallara tamamen uy.', env: 2, wealth: -250 },
+          { text: 'Denetimi erteletip biraz zaman kazan.', env: 1, wealth: -100 },
+          { text: 'Ormanın derinliklerinde kaçak işletme kur.', env: -2, wealth: 250 }
+        ]
+      },
+      {
+        title: 'Enerji Alanında İş Teklifi',
+        text: 'Bir yanda yağmur ormanı üstünde güneş enerjisi projesi, diğer yanda çevreyi zedeleyen baraj işi var.',
+        options: [
+          { text: 'Güneş enerjisi projesini seç.', env: 2, wealth: 0 },
+          { text: 'Baraj projesinde çalış.', env: -1, wealth: 350 }
+        ]
+      },
+      {
+        title: 'Sakız Hammaddesi Talebi',
+        text: 'Sipariş iki katına çıkacak ama mevcut arazin yetmiyor.',
+        options: [
+          { text: 'Talebi reddet, mevcut üretimi koru.', env: 1, wealth: 0 },
+          { text: 'Çevredeki ormanı yakıp temizleyerek üretimi artır.', env: -1, wealth: 200 }
+        ]
+      },
+      {
+        title: 'Kahve Üretimi',
+        text: 'Küresel kahve talebi hızla arttı. Daha fazla kazanma fırsatın var.',
+        options: [
+          { text: 'Aşırı üretim yap ve çevreyi zorla.', env: -2, wealth: 300 },
+          { text: 'Üretimi dengede tut, toprağı koru.', env: 2, wealth: -150 }
+        ]
+      },
+      {
+        title: 'Market Tercihi',
+        text: 'Ucuz ama çevreye zarar veren ürünlerle sürdürülebilir ürünler arasında seçim yapıyorsun.',
+        options: [
+          { text: 'Ucuz ürünleri al.', env: -1, wealth: 50 },
+          { text: 'Sürdürülebilir ürünleri seç.', env: 1, wealth: -50 }
+        ]
+      },
+      {
+        title: 'Egzotik Kuşlar',
+        text: 'Tehlike altındaki kuş türleriyle ilgili karar vermen gerekiyor.',
+        options: [
+          { text: 'İthalatı durdur.', env: 1, wealth: 0 },
+          { text: 'Korunaklı özel kuş barınağı kur ve üret.', env: 2, wealth: -150 },
+          { text: 'Nadirliği fırsata çevirip satış yap.', env: -1, wealth: 200 }
+        ]
+      },
+      {
+        title: 'Kaju Tarlası',
+        text: 'Büyük şirket sözleşmeni yenilemedi. Ne yapacaksın?',
+        options: [
+          { text: 'Toprağı koru, bu yıl kazançtan vazgeç.', env: 1, wealth: -150 },
+          { text: 'Diğer çiftçilerle birleş.', env: 0, wealth: 50 },
+          { text: 'Araziyi büyük bir sığır yetiştiricisine sat.', env: -1, wealth: 150 }
+        ]
+      },
+      {
+        title: 'Şifalı Bitki Keşfi',
+        text: 'Arazinde şifalı olabilecek yeni bir bitki bulundu.',
+        options: [
+          { text: 'Araziyi devlete sat.', env: 0, wealth: 150 },
+          { text: 'Araziyi koru, bilim grubundan küçük destek al.', env: 1, wealth: 50 },
+          { text: 'Yakıp temizleyerek ticari kârı sürdür.', env: -2, wealth: 300 }
+        ]
+      },
+      {
+        title: 'Yağmur Ormanına Yolculuk',
+        text: 'Fotoğraf çekmek için ormanın içine gitmen gerekiyor.',
+        options: [
+          { text: 'Büyük şirketin uçağına bin.', env: -1, wealth: 0, extraTurn: true },
+          { text: 'Rehber tutup nehir ve yürüyüş yoluyla git.', env: 1, wealth: -75 }
+        ]
+      },
+      {
+        title: 'Kauçuk Kaynağı',
+        text: 'Hammaddeyi sürdürülebilir küçük üreticilerden mi, yoksa ormanı temizleyen büyük plantasyonlardan mı alacaksın?',
+        options: [
+          { text: 'Küçük üreticilerden al.', env: 1, wealth: -100 },
+          { text: 'Büyük plantasyonlardan al.', env: -1, wealth: 150 }
+        ]
+      },
+      {
+        title: 'Av Yolu İnşaatı',
+        text: 'Yağmur ormanına ticari avcılığı kolaylaştıracak bir yol yapman teklif ediliyor.',
+        options: [
+          { text: 'Teklifi reddet.', env: 2, wealth: -300 },
+          { text: 'Teklifi kabul et.', env: -2, wealth: 300 }
+        ]
+      },
+      {
+        title: 'Göçmen Köylülerin Lideri',
+        text: 'Toprağı korumak için yaşam biçimini değiştirmen isteniyor.',
+        options: [
+          { text: 'Baskıları kabul edip başka yere taşın.', env: 2, wealth: -300 },
+          { text: 'Mümkün olduğu kadar mevcut yaşamı sürdür.', env: -1, wealth: 150 }
+        ]
+      },
+      {
+        title: 'Meyve Suyu Şirketi',
+        text: 'Ürünün yeterince tropikal tat vermiyor. Tedarik zincirini değiştirme fırsatın var.',
+        options: [
+          { text: 'Üretimi artırmak için uygunsuz teşvikler kullan.', env: -2, wealth: 250 },
+          { text: 'Sürdürülebilir hasat edilmiş meyve al.', env: 1, wealth: 0 },
+          { text: 'Bu ürünü bırakıp başka ürüne yönel.', env: 0, wealth: 50 }
+        ]
+      },
+      {
+        title: 'Mobilya Dükkanı',
+        text: 'Çok ucuz maun masalar sana teklif ediliyor.',
+        options: [
+          { text: 'Maun ürünleri boykot ederek satın alma.', env: 1, wealth: -100 },
+          { text: 'Masaları satın alıp sat.', env: -1, wealth: 200 }
+        ]
+      },
+      {
+        title: 'Kakao Üretimi',
+        text: 'Yeni ürün için daha çok kakao isteniyor.',
+        options: [
+          { text: 'Kakao alanını genişletmek için ormanı yok et.', env: -2, wealth: 250 },
+          { text: 'Mevcut üretimi koru, ek talebi başka yerden karşılat.', env: 1, wealth: 0 }
+        ]
+      },
+      {
+        title: 'Madagaskar Baharatı',
+        text: 'Nadir bir bitkiden baharat çıkarılmak isteniyor; bu bitki bir lemur türü için yaşamsal.',
+        options: [
+          { text: 'Baharatı çıkar, lemuru riske at.', env: -2, wealth: 300 },
+          { text: 'Teklifi reddet, canlı türünü koru.', env: 2, wealth: 0 },
+          { text: 'Arazinin bir kısmını kullandır, denge kur.', env: 1, wealth: 100 }
+        ]
+      },
+      {
+        title: 'Belgesel Geliri',
+        text: 'Yağmur ormanlarını anlatan belgeselinden yüklü para kazandın.',
+        options: [
+          { text: 'Geliri koruma ve hizmet gruplarına aktar.', env: 3, wealth: -200 },
+          { text: 'Parayı kendin için kullan.', env: 0, wealth: 200 }
+        ]
+      },
+      {
+        title: 'Ticari Av Teklifi',
+        text: 'Afrika’ya gidip ticari av yapman isteniyor.',
+        options: [
+          { text: 'Av teklifini kabul et.', env: -2, wealth: 300 },
+          { text: 'Sınırlı kota ile pazarlık yap.', env: 1, wealth: 50 },
+          { text: 'Teklifi tamamen reddet.', env: 3, wealth: -300 }
+        ]
+      },
+      {
+        title: 'Rüya Tatili',
+        text: 'Malezya yağmur ormanlarına gideceksin. İki seçeneğin var.',
+        options: [
+          { text: 'Ucuz tur şirketini seç.', env: -1, wealth: 150 },
+          { text: 'Yerel ekonomiyi destekleyen ekoturu seç.', env: 1, wealth: -150 }
+        ]
+      }
+    ];
+
+    const riskCards = [
+      { title: 'Parfüm Şirketi', text: '5 veya daha fazla çevre puanın varsa bitki yağları için +100 servet kazanırsın.', conditional: (p) => p.env >= 5, wealth: 100, env: 0, failText: 'Yeterli çevre puanın olmadığı için gelir elde edemedin.' },
+      { title: 'Koruma Arazisi', text: 'İstersen 150 servet verip 2 çevre puanı kazanabilirsin.', optionalTrade: { wealthCost: 150, envGain: 2 } },
+      { title: 'Şiddetli Sel', text: 'Aşırı yağış büyük erozyona neden oldu.', wealth: -150, env: 0 },
+      { title: 'Büyük Orman Yangını', text: '5 veya daha fazla çevre puanın varsa zarar görmezsin; yoksa -300 servet.', conditional: (p) => p.env >= 5, wealth: 0, env: 0, failWealth: -300, failText: 'Kayıtlı ormanların yeterince korunmadığı için büyük kayıp yaşadın.' },
+      { title: 'Toprağını Sat Baskısı', text: '500 veya daha fazla servetin varsa dayanırsın ve +1 çevre puanı alırsın; yoksa -1 çevre puanı.', conditionalMoney: 500, wealth: 0, env: 1, failEnv: -1, failText: 'Maddi baskıya dayanamadın ve araziyi elden çıkardın.' },
+      { title: 'Çevreci İkramlar', text: '400 veya daha fazla servetin varsa çevreci yiyeceklerle etkinlik yapıp +1 çevre puanı alırsın.', conditionalMoney: 400, wealth: 0, env: 1, failText: 'Bütçe yetmediği için çevreci seçeneği uygulayamadın.' },
+      { title: 'Tıbbi Bitki Geliri', text: 'Curare benzeri tıbbi değeri olan kaynaklar için +150 servet puanı aldın.', wealth: 150, env: 0 },
+      { title: 'Küresel Isınma Fonu', text: '5 veya daha fazla çevre puanın varsa +200 servet kazanırsın.', conditional: (p) => p.env >= 5, wealth: 200, env: 0, failText: 'Fon desteği için gerekli çevre puanına ulaşamadın.' },
+      { title: 'Hayvanat Bahçesi Teklifi', text: '5 veya daha fazla çevre puanın varsa nesli tehlikede olan tür için +400 servet kazanırsın.', conditional: (p) => p.env >= 5, wealth: 400, env: 0, failText: 'Yeterli korunmuş ormanın olmadığı için teklifi değerlendiremedin.' },
+      { title: 'Yakıt Sızıntısı', text: '500 veya daha fazla servetin varsa krizi yönetirsin; yoksa -2 çevre puanı.', conditionalMoney: 500, wealth: 0, env: 0, failEnv: -2, failText: 'Kirliliği engelleyemediğin için çevre ağır zarar gördü.' },
+      { title: 'Doğa İçin Borç Takası', text: 'Önerdiğin borç-doğa takası kabul edildi.', env: 1, wealth: 0 },
+      { title: 'Koruma Programına Bağış', text: 'İstersen 150 servet verip 2 çevre puanı kazanabilirsin.', optionalTrade: { wealthCost: 150, envGain: 2 } },
+      { title: 'Ünlü Desteği', text: 'Ünlü bir sanatçıyı davana destek olmaya ikna ettin.', env: 2, wealth: 0 },
+      { title: 'İç Savaş Saldırısı', text: '400 veya daha fazla servetin varsa tedavi masrafını karşılarsın; yoksa -2 çevre puanı.', conditionalMoney: 400, wealth: 0, env: 0, failEnv: -2, failText: 'Ailenin kaybı nedeniyle iş gücün azaldı ve araziyi koruyamadın.' },
+      { title: 'Koruma Tişörtleri', text: 'Tişört kampanyan başarı oldu.', env: 1, wealth: 100 },
+      { title: 'Toksik Yabani Otlar', text: 'Aşırı temizlenen arazi verimsizleşti.', env: -1, wealth: -100 },
+      { title: 'Yağmur Ormanı Kozmetikleri', text: 'Ürünün hem sattı hem farkındalık oluşturdu.', env: 1, wealth: 100 },
+      { title: 'Yanlış Uygulamalar', text: 'Ormansızlaştırma uygulamaların başka bölgelerde büyük hasara katkı sağladı.', env: -1, wealth: 0 }
+    ];
+
+    const state = {
+      players: [],
+      current: 0,
+      started: false,
+      mustEndTurn: false
+    };
+
+    const playerCountEl = document.getElementById('playerCount');
+    const nameInputsEl = document.getElementById('nameInputs');
+    const playersPanelEl = document.getElementById('playersPanel');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const rollBtn = document.getElementById('rollBtn');
+    const endTurnBtn = document.getElementById('endTurnBtn');
+    const boardEl = document.getElementById('board');
+    const logEl = document.getElementById('log');
+    const turnInfoEl = document.getElementById('turnInfo');
+    const diceResultEl = document.getElementById('diceResult');
+    const modalEl = document.getElementById('modal');
+    const modalCardEl = document.getElementById('modalCard');
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function buildNameInputs() {
+      nameInputsEl.innerHTML = '';
+      const count = Number(playerCountEl.value);
+      for (let i = 0; i < count; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Oyuncu ${i + 1} adı`;
+        input.value = `Oyuncu ${i + 1}`;
+        input.className = 'panel';
+        input.style.padding = '12px';
+        input.style.borderRadius = '14px';
+        input.style.border = '1px solid var(--border)';
+        nameInputsEl.appendChild(input);
+      }
+    }
+
+    function renderBoard() {
+      boardEl.innerHTML = '';
+      boardTiles.forEach((tile, index) => {
+        const div = document.createElement('div');
+        div.className = 'tile';
+        div.id = `tile-${index}`;
+        div.innerHTML = `
+          <div class="num">${index + 1}</div>
+          <div class="tile-title">${tile.title}</div>
+          <div class="tile-desc">${tile.desc}</div>
+          <div class="tokens" id="tokens-${index}"></div>
+        `;
+        boardEl.appendChild(div);
+      });
+      renderTokens();
+    }
+
+    function renderTokens() {
+      boardTiles.forEach((_, index) => {
+        const tokenWrap = document.getElementById(`tokens-${index}`);
+        if (tokenWrap) tokenWrap.innerHTML = '';
+      });
+
+      state.players.forEach((p, i) => {
+        const wrap = document.getElementById(`tokens-${p.pos}`);
+        if (!wrap) return;
+        const token = document.createElement('span');
+        token.className = 'token';
+        token.style.background = COLORS[i];
+        token.textContent = i + 1;
+        token.title = p.name;
+        wrap.appendChild(token);
+      });
+
+      document.querySelectorAll('.tile').forEach((t) => t.classList.remove('current'));
+      if (state.started && state.players[state.current]) {
+        const currentPos = state.players[state.current].pos;
+        const currentTile = document.getElementById(`tile-${currentPos}`);
+        if (currentTile) currentTile.classList.add('current');
+      }
+    }
+
+    function renderPlayers() {
+      playersPanelEl.innerHTML = '';
+      state.players.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'player' + (i === state.current && state.started ? ' active' : '');
+        div.innerHTML = `
+          <div class="name">${p.name}</div>
+          <div class="stats">
+            <div class="stat"><div class="label">Çevre</div><div class="value">${p.env}</div></div>
+            <div class="stat"><div class="label">Servet</div><div class="value">${p.wealth}</div></div>
+            <div class="stat"><div class="label">Konum</div><div class="value">${p.pos + 1}</div></div>
+          </div>
+          ${p.skip ? '<div style="margin-top:8px;color:var(--danger);font-weight:700;">Sonraki turu pas geçecek</div>' : ''}
+        `;
+        playersPanelEl.appendChild(div);
+      });
+      renderTokens();
+    }
+
+    function log(message) {
+      const div = document.createElement('div');
+      div.className = 'log-entry';
+      div.innerHTML = message;
+      logEl.prepend(div);
+    }
+
+    function clampPlayer(p) {
+      if (p.env < 0) p.env = 0;
+    }
+
+    function updateTurnInfo() {
+      if (!state.started) {
+        turnInfoEl.textContent = 'Oyun henüz başlamadı';
+        return;
+      }
+      turnInfoEl.textContent = `Sıra: ${state.players[state.current].name}`;
+    }
+
+    function startGame() {
+      const inputs = [...nameInputsEl.querySelectorAll('input')];
+      state.players = inputs.map((inp, i) => ({
+        name: inp.value.trim() || `Oyuncu ${i + 1}`,
+        env: 4,
+        wealth: 400,
+        pos: 0,
+        skip: false,
+        extraTurn: false
+      }));
+      state.current = 0;
+      state.started = true;
+      state.mustEndTurn = false;
+      logEl.innerHTML = '';
+      diceResultEl.textContent = 'Zar: -';
+      renderBoard();
+      renderPlayers();
+      updateTurnInfo();
+      rollBtn.disabled = false;
+      endTurnBtn.disabled = true;
+      log('<strong>Oyun başladı.</strong> İlk hedef: 10 çevre puanı ve 1000 servet puanı.');
+    }
+
+    function nextPlayer() {
+      const currentPlayer = state.players[state.current];
+      if (currentPlayer && currentPlayer.extraTurn) {
+        currentPlayer.extraTurn = false;
+        log(`<strong>${currentPlayer.name}</strong> ek tur hakkını kullanıyor.`);
+        updateTurnInfo();
+        renderPlayers();
+        rollBtn.disabled = false;
+        endTurnBtn.disabled = true;
+        state.mustEndTurn = false;
+        return;
+      }
+
+      state.current = (state.current + 1) % state.players.length;
+      const p = state.players[state.current];
+      if (p.skip) {
+        p.skip = false;
+        log(`<strong>${p.name}</strong> bu turu pas geçti.`);
+        nextPlayer();
+        return;
+      }
+      updateTurnInfo();
+      renderPlayers();
+      rollBtn.disabled = false;
+      endTurnBtn.disabled = true;
+      state.mustEndTurn = false;
+    }
+
+    function applyEffects(player, envDelta, wealthDelta) {
+      player.env += envDelta || 0;
+      player.wealth += wealthDelta || 0;
+      clampPlayer(player);
+    }
+
+    function checkWinner(player) {
+      if (player.env >= 10 && player.wealth >= 1000) {
+        modalCardEl.innerHTML = `
+          <h2>🎉 Oyun Bitti</h2>
+          <p class="winner">Kazanan: ${player.name}</p>
+          <p>${player.name}, hem çevreyi koruyup hem ekonomik hedefe ulaşarak oyunu kazandı.</p>
+          <div class="controls">
+            <button class="primary" onclick="closeModal();">Kapat</button>
+          </div>
+        `;
+        modalEl.classList.add('show');
+        rollBtn.disabled = true;
+        endTurnBtn.disabled = true;
+        state.started = false;
+        log(`<strong>${player.name}</strong> oyunu kazandı!`);
+        return true;
+      }
+      return false;
+    }
+
+    function finishAction(player) {
+      renderPlayers();
+      if (!checkWinner(player)) {
+        endTurnBtn.disabled = false;
+      }
+    }
+
+    function openChoiceCard(player) {
+      const card = shuffle(choiceCards)[0];
+      modalCardEl.innerHTML = `
+        <h2>🟩 ${card.title}</h2>
+        <p>${card.text}</p>
+        <div class="choice-list">
+          ${card.options.map((opt, idx) => `
+            <button class="choice-btn" onclick="selectChoice(${idx})">
+              <strong>${opt.text}</strong>
+              <small>Çevre: ${opt.env > 0 ? '+' : ''}${opt.env} | Servet: ${opt.wealth > 0 ? '+' : ''}${opt.wealth}</small>
+            </button>
+          `).join('')}
+        </div>
+      `;
+      modalEl.classList.add('show');
+      window.__currentChoice = { playerIndex: state.current, card };
+    }
+
+    window.selectChoice = function(idx) {
+      const ctx = window.__currentChoice;
+      const player = state.players[ctx.playerIndex];
+      const option = ctx.card.options[idx];
+      if (option.wealth < 0 && player.wealth + option.wealth < 0) {
+        alert('Bu seçeneği seçemezsin. Oyuncu gönüllü olarak borca giremez.');
+        return;
+      }
+      applyEffects(player, option.env, option.wealth);
+      if (option.extraTurn) {
+        player.extraTurn = true;
+      }
+      log(`<strong>${player.name}</strong>, <em>${ctx.card.title}</em> kartında şu seçimi yaptı: ${option.text} → Çevre ${option.env > 0 ? '+' : ''}${option.env}, Servet ${option.wealth > 0 ? '+' : ''}${option.wealth}${option.extraTurn ? ', Ek Tur +1' : ''}`);
+      closeModal();
+      finishAction(player);
+    };
+
+    function openRiskCard(player) {
+      const card = shuffle(riskCards)[0];
+
+      if (card.optionalTrade) {
+        modalCardEl.innerHTML = `
+          <h2>⚠️ ${card.title}</h2>
+          <p>${card.text}</p>
+          <div class="choice-list">
+            <button class="choice-btn" onclick="selectRiskTrade(true)">
+              <strong>Takas yap</strong>
+              <small>Servet -${card.optionalTrade.wealthCost} | Çevre +${card.optionalTrade.envGain}</small>
+            </button>
+            <button class="choice-btn" onclick="selectRiskTrade(false)">
+              <strong>Pas geç</strong>
+              <small>Değişiklik yok</small>
+            </button>
+          </div>
+        `;
+        modalEl.classList.add('show');
+        window.__currentRiskTrade = { playerIndex: state.current, card };
+        return;
+      }
+
+      let envDelta = card.env || 0;
+      let wealthDelta = card.wealth || 0;
+      let detail = card.text;
+
+      if (typeof card.conditional === 'function' && !card.conditional(player)) {
+        envDelta = card.failEnv || 0;
+        wealthDelta = card.failWealth || 0;
+        detail = card.failText || card.text;
+      }
+
+      if (card.conditionalMoney != null && player.wealth < card.conditionalMoney) {
+        envDelta = card.failEnv || 0;
+        wealthDelta = card.failWealth || 0;
+        detail = card.failText || card.text;
+      }
+
+      applyEffects(player, envDelta, wealthDelta);
+      modalCardEl.innerHTML = `
+        <h2>⚠️ ${card.title}</h2>
+        <p>${detail}</p>
+        <p><strong>Sonuç:</strong> Çevre ${envDelta > 0 ? '+' : ''}${envDelta}, Servet ${wealthDelta > 0 ? '+' : ''}${wealthDelta}</p>
+        <div class="controls">
+          <button class="primary" onclick="closeModal(); afterRisk();">Tamam</button>
+        </div>
+      `;
+      modalEl.classList.add('show');
+      window.__afterRiskPlayer = player;
+      log(`<strong>${player.name}</strong>, <em>${card.title}</em> risk kartını çekti. Sonuç: Çevre ${envDelta > 0 ? '+' : ''}${envDelta}, Servet ${wealthDelta > 0 ? '+' : ''}${wealthDelta}`);
+      renderPlayers();
+    }
+
+    window.afterRisk = function() {
+      const player = window.__afterRiskPlayer;
+      if (!player) return;
+      finishAction(player);
+      window.__afterRiskPlayer = null;
+    };
+
+    window.selectRiskTrade = function(accept) {
+      const ctx = window.__currentRiskTrade;
+      const player = state.players[ctx.playerIndex];
+      const trade = ctx.card.optionalTrade;
+      if (accept) {
+        if (player.wealth < trade.wealthCost) {
+          alert('Bu takası yapmak için yeterli servet puanın yok.');
+          return;
+        }
+        applyEffects(player, trade.envGain, -trade.wealthCost);
+        log(`<strong>${player.name}</strong>, <em>${ctx.card.title}</em> kartında takası kabul etti → Çevre +${trade.envGain}, Servet -${trade.wealthCost}`);
+      } else {
+        log(`<strong>${player.name}</strong>, <em>${ctx.card.title}</em> kartındaki takası pas geçti.`);
+      }
+      closeModal();
+      finishAction(player);
+      window.__currentRiskTrade = null;
+    };
+
+    function openChooseTileModal(player) {
+      modalCardEl.innerHTML = `
+        <h2>🧭 Kart Seç</h2>
+        <p>${player.name}, bu karede istediğin kart türünü seçebilirsin.</p>
+        <div class="choice-list">
+          <button class="choice-btn" onclick="chooseTileAction('risk')">
+            <strong>Risk Kartı Çek</strong>
+            <small>Beklenmedik olaylarla karşılaş.</small>
+          </button>
+          <button class="choice-btn" onclick="chooseTileAction('choice')">
+            <strong>Seçim Kartı Çek</strong>
+            <small>Karar ver ve sonucuna katlan.</small>
+          </button>
+        </div>
+      `;
+      modalEl.classList.add('show');
+      window.__chooseTilePlayerIndex = state.current;
+    }
+
+    window.chooseTileAction = function(type) {
+      const player = state.players[window.__chooseTilePlayerIndex];
+      closeModal();
+      if (type === 'risk') {
+        openRiskCard(player);
+      } else {
+        openChoiceCard(player);
+      }
+      window.__chooseTilePlayerIndex = null;
+    };
+
+    function resolveSpecialTile(player, tile) {
+      switch (tile.title) {
+        case 'Başkanlık Ödülü': {
+          if (player.env > 5) {
+            applyEffects(player, 0, 100);
+            log(`<strong>${player.name}</strong> “${tile.title}” karesinde +100 servet puanı kazandı.`);
+          } else {
+            log(`<strong>${player.name}</strong> “${tile.title}” karesine geldi ancak yeterli çevre puanı olmadığı için ödül alamadı.`);
+          }
+          finishAction(player);
+          return;
+        }
+        case 'Şiddetli Yağış ve Heyelan': {
+          applyEffects(player, 0, -75);
+          log(`<strong>${player.name}</strong> “${tile.title}” karesinde -75 servet puanı kaybetti.`);
+          finishAction(player);
+          return;
+        }
+        case 'Rekor Hasat': {
+          applyEffects(player, 0, 100);
+          log(`<strong>${player.name}</strong> “${tile.title}” karesinde +100 servet puanı kazandı.`);
+          finishAction(player);
+          return;
+        }
+        case 'Time Dergisi Makalesi': {
+          applyEffects(player, 1, 0);
+          log(`<strong>${player.name}</strong> “${tile.title}” karesinde +1 çevre puanı kazandı.`);
+          finishAction(player);
+          return;
+        }
+        case 'Uluslararası Tatil': {
+          player.skip = true;
+          log(`<strong>${player.name}</strong> “${tile.title}” karesine geldi. Bir sonraki turu pas geçecek.`);
+          finishAction(player);
+          return;
+        }
+        default: {
+          log(`<strong>${player.name}</strong> “${tile.title}” karesine geldi.`);
+          finishAction(player);
+        }
+      }
+    }
+
+    function resolveTile(player) {
+      const tile = boardTiles[player.pos];
+      if (!tile) return;
+
+      if (tile.type === 'choice') {
+        openChoiceCard(player);
+        return;
+      }
+
+      if (tile.type === 'risk') {
+        openRiskCard(player);
+        return;
+      }
+
+      if (tile.type === 'chooseTile') {
+        openChooseTileModal(player);
+        return;
+      }
+
+      if (tile.type === 'allPlayersEnv') {
+        state.players.forEach((p) => applyEffects(p, 1, 0));
+        log(`<strong>${player.name}</strong> “${tile.title}” karesine geldi. Tüm oyuncular +1 çevre puanı kazandı.`);
+        finishAction(player);
+        return;
+      }
+
+      if (tile.type === 'special') {
+        resolveSpecialTile(player, tile);
+      }
+    }
+
+    function rollDice() {
+      if (!state.started) return;
+      const player = state.players[state.current];
+      const roll = Math.floor(Math.random() * 6) + 1;
+      diceResultEl.textContent = `Zar: ${roll}`;
+      player.pos = (player.pos + roll) % boardTiles.length;
+      log(`<strong>${player.name}</strong> zar attı: <strong>${roll}</strong>. ${player.pos + 1}. kareye ilerledi.`);
+      renderPlayers();
+      rollBtn.disabled = true;
+      state.mustEndTurn = true;
+      resolveTile(player);
+    }
+
+    function endTurn() {
+      if (!state.mustEndTurn) return;
+      nextPlayer();
+    }
+
+    function resetGame() {
+      state.players = [];
+      state.current = 0;
+      state.started = false;
+      state.mustEndTurn = false;
+      diceResultEl.textContent = 'Zar: -';
+      logEl.innerHTML = '';
+      playersPanelEl.innerHTML = '';
+      updateTurnInfo();
+      rollBtn.disabled = true;
+      endTurnBtn.disabled = true;
+      renderBoard();
+      closeModal();
+    }
+
+    window.closeModal = function() {
+      modalEl.classList.remove('show');
+    };
+
+    function runTests() {
+      console.group('Yeşile Gidiş - Temel testler');
+
+      const p1 = { env: 1, wealth: 100 };
+      applyEffects(p1, -5, 0);
+      console.assert(p1.env === 0, 'Test 1 başarısız: çevre puanı 0 altına düşmemeli.');
+
+      const p2 = { env: 4, wealth: 600 };
+      const card2 = riskCards.find((c) => c.title === 'Toprağını Sat Baskısı');
+      let env2 = card2.env || 0;
+      if (card2.conditionalMoney != null && p2.wealth < card2.conditionalMoney) {
+        env2 = card2.failEnv || 0;
+      }
+      console.assert(env2 === 1, 'Test 2 başarısız: 500+ servette +1 çevre bekleniyordu.');
+
+      const p3 = { env: 4, wealth: 300 };
+      let env3 = card2.env || 0;
+      if (card2.conditionalMoney != null && p3.wealth < card2.conditionalMoney) {
+        env3 = card2.failEnv || 0;
+      }
+      console.assert(env3 === -1, 'Test 3 başarısız: düşük servette -1 çevre bekleniyordu.');
+
+      const p4 = { env: 4, wealth: 400, extraTurn: false };
+      const choiceWithExtra = choiceCards.find((c) => c.title === 'Yağmur Ormanına Yolculuk').options[0];
+      if (choiceWithExtra.extraTurn) p4.extraTurn = true;
+      console.assert(p4.extraTurn === true, 'Test 4 başarısız: ek tur bayrağı işlenmeli.');
+
+      console.assert(typeof window.afterRisk === 'function', 'Test 5 başarısız: afterRisk tanımlı olmalı.');
+      console.assert(boardTiles.length === 16, 'Test 6 başarısız: tahta 16 kare olmalı.');
+
+      console.groupEnd();
+    }
+
+    playerCountEl.addEventListener('change', buildNameInputs);
+    startBtn.addEventListener('click', startGame);
+    resetBtn.addEventListener('click', resetGame);
+    rollBtn.addEventListener('click', rollDice);
+    endTurnBtn.addEventListener('click', endTurn);
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) closeModal();
+    });
+
+    buildNameInputs();
+    renderBoard();
+    runTests();
+  </script>
+</body>
+</html>
