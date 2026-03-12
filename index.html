@@ -125,7 +125,6 @@
 </head>
 <body class="p-2 md:p-6">
 
-    <!-- Kurulum Ekranı -->
     <div id="setup-screen" class="fixed inset-0 z-[100] bg-green-950 flex items-center justify-center p-4">
         <div class="bg-white p-10 rounded-[40px] shadow-2xl max-w-lg w-full text-center">
             <h1 class="text-4xl font-black text-green-900 mb-2 italic tracking-tighter">YEŞİLİ TERCİH ET 🌿</h1>
@@ -140,8 +139,6 @@
     </div>
 
     <div id="game-container" class="hidden max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        <!-- Sol Panel -->
         <div class="lg:col-span-3 space-y-4">
             <div id="player-panels" class="space-y-3"></div>
             <div class="bg-white p-6 rounded-[24px] shadow-xl border-t-8 border-green-600">
@@ -162,7 +159,6 @@
             </div>
         </div>
 
-        <!-- Orta Panel -->
         <div class="lg:col-span-6">
             <div id="game-board" class="board-container">
                 <div class="center-area">
@@ -174,17 +170,16 @@
             </div>
         </div>
 
-        <!-- Sağ Panel -->
         <div class="lg:col-span-3 space-y-4">
             <div class="bg-white p-5 rounded-[24px] shadow-xl border-l-8 border-amber-500">
-                <h3 class="font-black text-gray-800 mb-4 text-xs tracking-widest uppercase italic"><i class="fas fa-bullseye mr-2"></i> Hedefler</h3>
+                <h3 class="font-black text-gray-800 mb-4 text-xs tracking-widest uppercase italic"><i class="fas fa-bullseye mr-2"></i> Kazanan Ol!</h3>
                 <div class="space-y-2">
                     <div class="flex items-center justify-between bg-green-50 p-2 rounded-xl">
-                        <span class="text-[10px] text-green-800 font-bold uppercase tracking-tight">Çevre</span>
+                        <span class="text-[10px] text-green-800 font-bold uppercase tracking-tight">Çevre Hedefi</span>
                         <span class="text-sm font-black text-green-900">10+</span>
                     </div>
                     <div class="flex items-center justify-between bg-amber-50 p-2 rounded-xl">
-                        <span class="text-[10px] text-amber-800 font-bold uppercase tracking-tight">Servet</span>
+                        <span class="text-[10px] text-amber-800 font-bold uppercase tracking-tight">Servet Hedefi</span>
                         <span class="text-sm font-black text-amber-900">1.000+</span>
                     </div>
                 </div>
@@ -198,7 +193,6 @@
         </div>
     </div>
 
-    <!-- Senaryo Modalı -->
     <div id="scenario-modal" class="modal-bg fixed inset-0 z-[200] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div id="modal-header" class="p-8 bg-green-600 text-white font-black text-2xl flex justify-between items-center shrink-0">
@@ -212,185 +206,27 @@
         </div>
     </div>
 
-    <!-- Kazanma Modalı -->
     <div id="win-modal" class="modal-bg fixed inset-0 z-[300] hidden flex items-center justify-center p-4">
         <div class="bg-white p-16 rounded-[60px] text-center shadow-2xl max-w-md border-t-[12px] border-green-500">
             <div class="text-9xl mb-10 transform hover:scale-110 transition-transform">🌍</div>
             <h2 id="winner-text" class="text-4xl font-black text-green-900 mb-4 tracking-tighter">ZAFER!</h2>
+            <p class="text-gray-600 mb-10 text-xl font-semibold">Gelecek nesillere yeşil bir world bıraktınız.</p>
             <button onclick="location.reload()" class="w-full bg-green-600 text-white py-6 rounded-3xl font-black text-2xl shadow-xl transition-all">TEKRAR BAŞLA</button>
         </div>
     </div>
 
     <script>
         const choiceCards = [
-            {
-                title: "TAYLAND TARIM BAKANI",
-                desc: "Tayland Tarım Bakanısın. Artan nüfusu besleme konusundaki ilerleme eksikliği nedeniyle işin tehlikede. Ne yapacaksın?",
-                options: [
-                    { text: "Yağmur ormanı arazisini yok ederek yeni ekinler dik. (-1 Çevre, +250 Servet)", env: -1, wealth: 250 },
-                    { text: "Sanayileşmiş ülkelerden yardım isteyerek borca gir. (+100 Servet)", env: 0, wealth: 100 },
-                    { text: "İstifa et ve ormanların yok edilmesine karşı çık. (+3 Çevre, -200 Servet)", env: 3, wealth: -200 }
-                ]
-            },
-            {
-                title: "AMAZON'DA ALTIN MADENCİLİĞİ",
-                desc: "Amazon'da altın aramak için dere yataklarını buldozerle kazıyorsun. Yeni çevre düzenlemeleri kârını yok edebilir. Ne yapacaksın?",
-                options: [
-                    { text: "Düzenlemelere harfiyen uy ve kârından vazgeç. (+2 Çevre, -250 Servet)", env: 2, wealth: -250 },
-                    { text: "Torpille denetimleri bir yıl ertelet. (+1 Çevre, -100 Servet)", env: 1, wealth: -100 },
-                    { text: "Gizli ve yasadışı bir maden kur. (-2 Çevre, +250 Servet)", env: -2, wealth: 250 }
-                ]
-            },
-            {
-                title: "ENERJİ MÜHENDİSİ",
-                desc: "Brezilya'da parlak bir mühendissin. İki iş teklifi aldın.",
-                options: [
-                    { text: "Düşük maaşlı güneş enerjisi projesi. (+2 Çevre, 0 Servet)", env: 2, wealth: 0 },
-                    { text: "Ormana zarar veren dev hidroelektrik santrali. (-1 Çevre, +350 Servet)", env: -1, wealth: 350 }
-                ]
-            },
-            {
-                title: "SAKIZ ÜRETİCİSİ",
-                desc: "Giggley's Sakız siparişi ikiye katladı ancak kapasiten yetersiz.",
-                options: [
-                    { text: "Siparişi reddet. (+1 Çevre, 0 Servet)", env: 1, wealth: 0 },
-                    { text: "Yeni alan açmak için ormanı yak. (-1 Çevre, +200 Servet)", env: -1, wealth: 200 }
-                ]
-            },
-            {
-                title: "KAHVE TALEBİ",
-                desc: "Espresso talebi patladı. Üretimi nasıl yöneteceksin?",
-                options: [
-                    { text: "Ormanı kesip aşırı ekim yap. (-2 Çevre, +300 Servet)", env: -2, wealth: 300 },
-                    { text: "Üretimi sabit tut, toprağı koru. (+2 Çevre, -150 Servet)", env: 2, wealth: -150 }
-                ]
-            },
-            {
-                title: "SÜRDÜRÜLEBİLİR ALIŞVERİŞ",
-                desc: "Markettesin. Ucuz marka mı yoksa sürdürülebilir ürün mü?",
-                options: [
-                    { text: "Ucuz markayı al. (-1 Çevre, +50 Servet)", env: -1, wealth: 50 },
-                    { text: "Ekstra para verip orman dostu ürünü al. (+1 Çevre, -50 Servet)", env: 1, wealth: -50 }
-                ]
-            },
-            {
-                title: "EGZOTİK KUŞLAR",
-                desc: "Koleksiyoncuyum. Sevdiğin kuşun nesli tükenmek üzere.",
-                options: [
-                    { text: "İthalatı durdur. (+1 Çevre, 0 Servet)", env: 1, wealth: 0 },
-                    { text: "Özel barınak kurup üret. (+2 Çevre, -150 Servet)", env: 2, wealth: -150 },
-                    { text: "Nadirlikten kâr etmek için sat. (-1 Çevre, +200 Servet)", env: -1, wealth: 200 }
-                ]
-            },
-            {
-                title: "KAJU PLANTASYONU",
-                desc: "Büyük şirket kontratını yenilemedi.",
-                options: [
-                    { text: "Toprağını tut ve bekle. (+1 Çevre, -150 Servet)", env: 1, wealth: -150 },
-                    { text: "Diğer çiftçilerle birleş. (+50 Servet)", env: 0, wealth: 50 },
-                    { text: "Araziyi sığır tüccarına sat. (-1 Çevre, +150 Servet)", env: -1, wealth: 150 }
-                ]
-            },
-            {
-                title: "KAUÇUK ÜRETİCİSİ",
-                desc: "L.A.'de dalgıç kıyafeti üretiyorsun. Kauçuk kaynağın ne olacak?",
-                options: [
-                    { text: "Sürdürülebilir küçük çiftçiden pahalıya al. (+1 Çevre, -100 Servet)", env: 1, wealth: -100 },
-                    { text: "Orman kesen büyük plantasyondan ucuza al. (-1 Çevre, +150 Servet)", env: -1, wealth: 150 }
-                ]
-            },
-            {
-                title: "AVCI YOLU",
-                desc: "Kongo'da avcılar için ormana yol yapman teklif edildi.",
-                options: [
-                    { text: "İşi reddet, ekosistemi koru. (+2 Çevre, -300 Servet)", env: 2, wealth: -300 },
-                    { text: "İşi kabul et, ekmek parası sonuçta. (-2 Çevre, +300 Servet)", env: -2, wealth: 300 }
-                ]
-            },
-            {
-                title: "YENİ BİTKİ TÜRÜ",
-                desc: "Arazinde şifalı bir bitki keşfedildi.",
-                options: [
-                    { text: "Araziyi araştırma için devlete sat. (+150 Servet)", env: 0, wealth: 150 },
-                    { text: "Uluslararası gruptan destek alıp araziyi koru. (+1 Çevre, +50 Servet)", env: 1, wealth: 50 },
-                    { text: "Araziyi yakıp kârına bak. (-2 Çevre, +300 Servet)", env: -2, wealth: 300 }
-                ]
-            },
-            {
-                title: "FOTOĞRAFÇI PLANI",
-                desc: "National Geographic için Endonezya'dasın. Ulaşım yöntemin?",
-                options: [
-                    { text: "Gelişim şirketinin uçağıyla git. (-1 Çevre, +200 Servet)", env: -1, wealth: 200 },
-                    { text: "Kılavuz tut, nehir ve yaya git. (+1 Çevre, -75 Servet)", env: 1, wealth: -75 }
-                ]
-            },
-            {
-                title: "GÖÇMEN KÖYLÜ LİDERİ",
-                desc: "Fildişi Sahili'nde halkını yaşatman gerekiyor.",
-                options: [
-                    { text: "Doğa için halkını başka yere taşı. (+2 Çevre, -300 Servet)", env: 2, wealth: -300 },
-                    { text: "Topraktan yaşamaya devam et. (-1 Çevre, +150 Servet)", env: -1, wealth: 150 }
-                ]
-            },
-            {
-                title: "SUNNY DRINKS BAŞKANI",
-                desc: "Meyve suyunun tadı eksik, pazar payın düşüyor.",
-                options: [
-                    { text: "Tedarikçiyi zorlayıp ucuza meyve al. (-2 Çevre, +250 Servet)", env: -2, wealth: 250 },
-                    { text: "Sürdürülebilir meyveye yatırım yap. (+1 Çevre, 0 Servet)", env: 1, wealth: 0 },
-                    { text: "Bu hattı bırak, başka içeceğe odaklan. (+50 Servet)", env: 0, wealth: 50 }
-                ]
-            },
-            {
-                title: "MOBİLYA MAĞAZASI",
-                desc: "Pahalı maun masalar ucuza teklif edildi.",
-                options: [
-                    { text: "Maunu boykot et, satın alma. (+1 Çevre, -100 Servet)", env: 1, wealth: -100 },
-                    { text: "Ucuza alıp dükkanda sat. (-1 Çevre, +200 Servet)", env: -1, wealth: 200 }
-                ]
-            },
-            {
-                title: "KAKAO TEDARİKÇİSİ",
-                desc: "Sweet Dreams üretimi artırmak istiyor.",
-                options: [
-                    { text: "Koruma alanını kakao için yok et. (-2 Çevre, +250 Servet)", env: -2, wealth: 250 },
-                    { text: "Üretimi sabit tut, fazlasını reddet. (+1 Çevre, 0 Servet)", env: 1, wealth: 0 }
-                ]
-            },
-            {
-                title: "MERKEZİ AFRİKA AVI",
-                desc: "Av turuna katılman teklif edildi.",
-                options: [
-                    { text: "Parası iyi, ava katıl. (-2 Çevre, +300 Servet)", env: -2, wealth: 300 },
-                    { text: "Sadece belirli kotada avlan. (+1 Çevre, +50 Servet)", env: 1, wealth: 50 },
-                    { text: "Teklifi reddet, hayvanları koru. (+3 Çevre, -300 Servet)", env: 3, wealth: -300 }
-                ]
-            },
-            {
-                title: "MALEZYA TATİLİ",
-                desc: "Piyango vurdu. Tatil planın?",
-                options: [
-                    { text: "Ucuz paket tur al. (-1 Çevre, +150 Servet)", env: -1, wealth: 150 },
-                    { text: "Pahalı eko-tur al. (+1 Çevre, -150 Servet)", env: 1, wealth: -150 }
-                ]
-            },
-            {
-                title: "MADAGASKAR BAHARATI",
-                desc: "Şef bitkinin peşinde ama lemurlar sadece onunla besleniyor.",
-                options: [
-                    { text: "Baharatı topla, lemurları boşver. (-2 Çevre, +300 Servet)", env: -2, wealth: 300 },
-                    { text: "Lemurları koru, baharatı verme. (+2 Çevre, 0 Servet)", env: 2, wealth: 0 },
-                    { text: "Sadece küçük bir kısmını paylaş. (+1 Çevre, +100 Servet)", env: 1, wealth: 100 }
-                ]
-            },
-            {
-                title: "FİLM YAPIMCISI",
-                desc: "Belgeselin çok tuttu, büyük para kazandın.",
-                options: [
-                    { text: "Parayı koruma vakıflarına bağışla. (+3 Çevre, -200 Servet)", env: 3, wealth: -200 },
-                    { text: "Parayı kendine sakla, keyfine bak. (+200 Servet)", env: 0, wealth: 200 }
-                ]
-            }
+            { title: "TAYLAND TARIM BAKANI", desc: "Nüfusu besleme konusundaki ilerleme eksikliği nedeniyle işin tehlikede. Ormanlar mı, koltuk mu?", options: [{ text: "Ormanları kesip tarım arazisi aç. (-1 Çevre, +250 Servet)", env: -1, wealth: 250 }, { text: "Sanayileşmiş ülkelerden borç al. (+100 Servet)", env: 0, wealth: 100 }, { text: "İstifa et ve ormanı savun. (+3 Çevre, -200 Servet)", env: 3, wealth: -200 }] },
+            { title: "AMAZON'DA ALTIN MADENCİLİĞİ", desc: "Yeni çevre düzenlemeleri kârını yok edebilir. Ne yapacaksın?", options: [{ text: "Yasalara uy ve kârından vazgeç. (+2 Çevre, -250 Servet)", env: 2, wealth: -250 }, { text: "Denetimi torpille ertele. (+1 Çevre, -100 Servet)", env: 1, wealth: -100 }, { text: "Gizli ve yasadışı maden kur. (-2 Çevre, +250 Servet)", env: -2, wealth: 250 }] },
+            { title: "ENERJİ MÜHENDİSİ", desc: "Enerji alanında iki iş teklifi aldın. Hangisi?", options: [{ text: "Güneş enerjisi projesi. (+2 Çevre, 0 Servet)", env: 2, wealth: 0 }, { text: "Dev hidroelektrik santrali. (-1 Çevre, +350 Servet)", env: -1, wealth: 350 }] },
+            { title: "SAKIZ ÜRETİCİSİ", desc: "Siparişler ikiye katlandı ancak kapasite doldu.", options: [{ text: "Siparişi reddet. (+1 Çevre, 0 Servet)", env: 1, wealth: 0 }, { text: "Orman yakıp alan aç. (-1 Çevre, +200 Servet)", env: -1, wealth: 200 }] },
+            { title: "KAHVE TALEBİ", desc: "Kahve talebi patladı. Üretimi nasıl yöneteceksin?", options: [{ text: "Ormanı kesip aşırı ekim yap. (-2 Çevre, +300 Servet)", env: -2, wealth: 300 }, { text: "Üretimi sabit tut, toprağı koru. (+2 Çevre, -150 Servet)", env: 2, wealth: -150 }] },
+            { title: "SÜRDÜRÜLEBİLİR ALIŞVERİŞ", desc: "Markettesin. Ucuz marka mı, sürdürülebilir ürün mü?", options: [{ text: "Ucuz markayı al. (-1 Çevre, +50 Servet)", env: -1, wealth: 50 }, { text: "Orman dostu ürünü al. (+1 Çevre, -50 Servet)", env: 1, wealth: -50 }] },
+            { title: "EGZOTİK KUŞLAR", desc: "Sevdiğin kuşun nesli tükenmek üzere.", options: [{ text: "İthalatı durdur. (+1 Çevre, 0 Servet)", env: 1, wealth: 0 }, { text: "Özel barınak kur. (+2 Çevre, -150 Servet)", env: 2, wealth: -150 }, { text: "Kâr etmek için sat. (-1 Çevre, +200 Servet)", env: -1, wealth: 200 }] },
+            { title: "KAJU PLANTASYONU", desc: "Büyük şirket kontratını yenilemedi.", options: [{ text: "Toprağı tut ve bekle. (+1 Çevre, -150 Servet)", env: 1, wealth: -150 }, { text: "Çiftçilerle birleş. (+50 Servet)", env: 0, wealth: 50 }, { text: "Araziyi sığır tüccarına sat. (-1 Çevre, +150 Servet)", env: -1, wealth: 150 }] },
+            { title: "KAUÇUK ÜRETİCİSİ", desc: "Kauçuk kaynağın ne olacak?", options: [{ text: "Küçük çiftçiden al. (+1 Çevre, -100 Servet)", env: 1, wealth: -100 }, { text: "Büyük plantasyondan ucuza al. (-1 Çevre, +150 Servet)", env: -1, wealth: 150 }] },
+            { title: "FİLM YAPIMCISI", desc: "Belgeselin çok tuttu, büyük para kazandın.", options: [{ text: "Parayı koruma vakıflarına bağışla. (+3 Çevre, -200 Servet)", env: 3, wealth: -200 }, { text: "Parayı kendine sakla. (+200 Servet)", env: 0, wealth: 200 }] }
         ];
 
         const riskCards = [
@@ -400,17 +236,10 @@
             { title: "IVY LEAGUE MEZUNU", desc: "Öğrenciler biyoloji programı başlatmak için destek istiyor.", trade: {cost: 150, gain: 2, msg: "Eğitime verdiğin destek meyvesini verdi. (+2 Çevre)"} },
             { title: "SIĞIR OTLAKLARI", desc: "Otlak için ormanı kestin ama zehirli otlar sığırlarını öldürdü.", result: {env:-1, wealth:-100, msg: "Bedeli ağır oldu. (-1 Çevre, -100 Servet)"} },
             { title: "DOĞA İÇİN BORÇ", desc: "Banka ile Kongo hükümeti arasındaki borç-doğa takası kabul edildi.", result: {env:1, wealth:0, msg: "Koruma başarısı! (+1 Çevre)"} },
-            { title: "PRESERVASYON T-SHIRT", desc: "Tasarladığın t-shirtler gençler arasında fenomen oldu.", result: {env:1, wealth:100, msg: "Stil ve doğa bir arada! (+1 Çevre, +100 Servet)"} },
             { title: "GEÇİMLİK ÇİFTÇİ", desc: "Sığır tüccarı arazini istiyor.", check: (p) => p.wealth >= 500 ? {env:1, wealth:0, msg: "Arazini korudun! (+1 Çevre)"} : {env:-1, wealth:0, msg: "Satmak zorunda kaldın. (-1 Çevre)"} },
             { title: "YAKIT SIZINTISI", desc: "Yakıt tankı sızıntı yapıyor.", check: (p) => p.wealth >= 500 ? {env:0, wealth:0, msg: "Hızlıca tamir ettin."} : {env:-2, wealth:0, msg: "Doğa zehirlendi. (-2 Çevre)"} },
             { title: "ORMAN YANGINI", desc: "Doğu Kalimantan'da yangın var.", check: (p) => p.env >= 5 ? {env:0, wealth:0, msg: "Ormanın dirençli çıktı."} : {env:0, wealth:-300, msg: "Her şeyini kaybettin. (-300 Servet)"} },
-            { title: "PAPAĞAN ÜRETİMİ", desc: "Hayvanat bahçesi nesli tükenen papağan için eş arıyor.", check: (p) => p.env >= 5 ? {env:0, wealth:400, msg: "Papağan çiftleştirildi! (+400 Servet)"} : {env:0, wealth:0, msg: "Uygun ormanın yok."} },
-            { title: "FELAKET YAĞIŞ", desc: "Aşırı yağış toprak kaymasına neden oldu. (-150 Servet)", result: {env:0, wealth:-150, msg: "Erozyon cebini yaktı."} },
-            { title: "ISINMA KOALİSYONU", desc: "Küresel ısınma koalisyonu sadık çevrecileri ödüllendiriyor.", check: (p) => p.env >= 5 ? {env:0, wealth:200, msg: "Ödülü kaptın! (+200 Servet)"} : {env:0, wealth:0, msg: "Ödül için yetersizsin."} },
-            { title: "EKSANTRİK ARAZİ SAHİBİ", desc: "Bir araziyi koruma sözüyle ucuza alabilirsin.", trade: {cost: 150, gain: 2, msg: "Yeni koruma alanı! (+2 Çevre)"} },
-            { title: "KÜRARE TEDARİĞİ", desc: "Arazindeki bitkiler cerrahide kullanılıyor. (+150 Servet)", result: {env:0, wealth:150, msg: "Tıbba katkı sağladın."} },
-            { title: "PARFÜM ÜRETİCİSİ", desc: "Üretici bitki özleri için ödeme yapıyor.", check: (p) => p.env >= 5 ? {env:0, wealth:100, msg: "Mis gibi kâr! (+100 Servet)"} : {env:0, wealth:0, msg: "Bitkin yok."} },
-            { title: "EKOLOJİK PARTİ", desc: "Büyük bir parti veriyorsun.", check: (p) => p.wealth >= 400 ? {env:1, wealth:0, msg: "Ekolojik ikramlar beğenildi! (+1 Çevre)"} : {env:0, wealth:0, msg: "Sıradan atıştırmalıklar alındı."} }
+            { title: "ISINMA KOALİSYONU", desc: "Küresel ısınma koalisyonu sadık çevrecileri ödüllendiriyor.", check: (p) => p.env >= 5 ? {env:0, wealth:200, msg: "Ödülü kaptın! (+200 Servet)"} : {env:0, wealth:0, msg: "Ödül için yetersizsin."} }
         ];
 
         const boardData = [
@@ -419,25 +248,25 @@
             { text: "SEÇİM", type: "choice" },
             { text: "RİSK", type: "risk" },
             { text: "Teşvik Ödülü (+50 Servet)", type: "event", res: {env:0, wealth:50} },
+            { text: "SEÇİM", type: "choice" },
             { text: "RİSK", type: "risk" },
             { text: "Başkan Ödülü (6+ Çev ise +100 Servet)", type: "event", check: (p) => p.env >= 6 ? {env:0, wealth:100} : {env:0, wealth:0} },
-            { text: "RİSK", type: "risk" },
             { text: "SEÇİM", type: "choice" },
+            { text: "RİSK", type: "risk" },
             { text: "Para Kazan $$$ (+50 Servet)", type: "event", res: {env:0, wealth:50} },
-            { text: "RİSK", type: "risk" },
-            { text: "RİSK", type: "risk" },
+            { text: "SEÇİM", type: "choice" },
             { text: "Risk mi, Seçim mi?", type: "choice" },
-            { text: "SEÇİM", type: "choice" },
+            { text: "RİSK", type: "risk" },
             { text: "Çamur Kayması (-75 Servet)", type: "event", res: {env:0, wealth:-75} },
-            { text: "RİSK", type: "risk" },
-            { text: "Time Makalenizi Yayınladı (+1 Çevre)", type: "event", res: {env:1, wealth:0} },
             { text: "SEÇİM", type: "choice" },
+            { text: "Time Makalenizi Yayınladı (+1 Çevre)", type: "event", res: {env:1, wealth:0} },
             { text: "RİSK", type: "risk" },
+            { text: "SEÇİM", type: "choice" },
             { text: "RİSK", type: "risk" },
             { text: "Rekor Fındık Hasadı! (+100 Servet)", type: "event", res: {env:0, wealth:100} },
-            { text: "Uluslararası Tatil - 1 Tur Bekle", type: "event", skip: true },
+            { text: "SEÇİM", type: "choice" },
             { text: "RİSK", type: "risk" },
-            { text: "SEÇİM", type: "choice" }
+            { text: "RİSK", type: "risk" }
         ];
 
         const layout = [
@@ -490,11 +319,11 @@
                     </div>
                     <div class="flex gap-4">
                         <div class="flex-1 bg-green-50 p-2 rounded-xl text-center">
-                            <div class="text-[9px] text-green-600 font-bold uppercase">Çevre</div>
+                            <div class="text-[9px] text-green-600 font-bold uppercase tracking-widest">Çevre</div>
                             <div class="text-base font-black text-green-900">${p.env}</div>
                         </div>
                         <div class="flex-1 bg-amber-50 p-2 rounded-xl text-center">
-                            <div class="text-[9px] text-amber-600 font-bold uppercase">Servet</div>
+                            <div class="text-[9px] text-amber-600 font-bold uppercase tracking-widest">Servet</div>
                             <div class="text-base font-black text-amber-900">${p.wealth}</div>
                         </div>
                     </div>
