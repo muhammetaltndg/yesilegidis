@@ -267,7 +267,7 @@
         const riskCards = [
             { 
                 title: "GERİLLA SALDIRISI",
-                desc: "Kongo Havzası'nda iç savaşta savaşan gerillalar ailenize saldırdı. Maalesef oğlunuz ağır yaralandı. Tıbbi yardım alabilmek için kaynağa ihtiyacın var.", 
+                desc: "Kongo Havzası'nda iç savaşta savaşanlar ailenize saldırdı. Maalesef oğlunuz yaralandı. Tıbbi yardım alabilmek için kaynağa ihtiyacın var.", 
                 check: (p) => p.wealth >= 400 ? {env:0, wealth:0, msg:"400 servet puanın sayesinde tıbbi yardım aldınız ve oğlunuz iyileşti."} : {env:-2, wealth:0, msg:"Yeterli servet puanın olmadığı için oğlun hayatını kaybetti, iş gücü kaybı nedeniyle ormanı odunculara satmak zorunda kaldınız."} 
             },
             { 
