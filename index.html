@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yeşili Tercih Et - Çok Oyunculu Yağmur Ormanları Oyunu</title>
+    <title>Yeşili Tercih Et - Dijitalleşen Coğrafya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -12,18 +12,18 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f0fdf4;
-            overflow-x: hidden;
             color: #1a2e1a;
+            user-select: none;
         }
 
-        /* Tahta Grid Yapısı Düzenlemesi */
+        /* Düzenli Grid Yapısı */
         .board-container {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             grid-template-rows: repeat(7, 1fr);
-            gap: 6px;
+            gap: 8px;
             width: 100%;
-            max-width: 900px; 
+            max-width: 800px;
             aspect-ratio: 1 / 1;
             margin: auto;
             position: relative;
@@ -41,26 +41,16 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            /* Yazı boyutu kutu boyutuna göre çok daha hassas ayarlandı */
-            font-size: clamp(0.4rem, 1vw, 0.7rem);
+            font-size: clamp(0.45rem, 1.1vw, 0.75rem);
             font-weight: 700;
-            padding: 4px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 10px;
             background: white;
             position: relative;
             line-height: 1.2;
             word-wrap: break-word;
-            overflow: hidden; /* Taşmayı önler */
+            overflow: hidden;
             box-shadow: 0 2px 0 rgba(22, 101, 52, 0.1);
-            height: 100%;
-            width: 100%;
-        }
-
-        /* Başlangıç karesi özel font */
-        .start-tile {
-            font-size: clamp(0.6rem, 1.2vw, 0.9rem) !important;
-            background-color: #166534 !important;
-            color: white !important;
         }
 
         .center-area {
@@ -70,57 +60,53 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 24px;
             z-index: 1;
             border: 3px dashed #166534;
             backdrop-filter: blur(4px);
-            padding: 15px;
+            padding: 20px;
         }
 
         .player-token {
-            width: 22px;
-            height: 22px;
-            border: 2.5px solid white;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
             border-radius: 50%;
             position: absolute;
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 30;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .choice-tile { background-color: #f0fdfa; color: #065f46; border-color: #059669; }
         .risk-tile { background-color: #fff1f2; color: #9f1239; border-color: #f43f5e; }
         .event-tile { background-color: #eff6ff; color: #1e40af; border-color: #3b82f6; }
+        .start-tile { background-color: #166534 !important; color: white !important; font-size: 0.9rem !important; }
 
         .active-turn {
             border: 4px solid #fbbf24 !important;
             transform: scale(1.03);
             z-index: 20;
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
-            background-color: #fffbeb;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
         }
 
+        /* Noktalı Zar Tasarımı */
         .dice {
-            width: 65px;
-            height: 65px;
+            width: 60px;
+            height: 60px;
             background-color: #fff;
-            border-radius: 14px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            padding: 10px;
+            padding: 8px;
             gap: 4px;
             border: 2px solid #e2e8f0;
         }
 
-        .dot {
-            background-color: #1a2e1a;
-            border-radius: 50%;
-            visibility: hidden;
-        }
-
+        .dot { background-color: #1a2e1a; border-radius: 50%; visibility: hidden; }
         [data-value="1"] .dot:nth-child(5) { visibility: visible; }
         [data-value="2"] .dot:nth-child(1), [data-value="2"] .dot:nth-child(9) { visibility: visible; }
         [data-value="3"] .dot:nth-child(1), [data-value="3"] .dot:nth-child(5), [data-value="3"] .dot:nth-child(9) { visibility: visible; }
@@ -130,24 +116,24 @@
 
         .shake { animation: shake-dice 0.5s infinite; }
         @keyframes shake-dice {
-            0% { transform: translate(0,0) rotate(0); }
-            25% { transform: translate(-3px, 3px) rotate(8deg); }
-            50% { transform: translate(3px, -3px) rotate(-8deg); }
-            100% { transform: translate(0,0) rotate(0); }
+            0% { transform: rotate(0); }
+            25% { transform: rotate(10deg) translate(2px, 2px); }
+            50% { transform: rotate(-10deg) translate(-2px, -2px); }
+            100% { transform: rotate(0); }
         }
 
         .modal-bg { background: rgba(6, 78, 59, 0.9); backdrop-filter: blur(8px); }
     </style>
 </head>
-<body class="p-2 md:p-4">
+<body class="p-2 md:p-6">
 
     <!-- Kurulum Ekranı -->
     <div id="setup-screen" class="fixed inset-0 z-[100] bg-green-950 flex items-center justify-center p-4">
         <div class="bg-white p-10 rounded-[40px] shadow-2xl max-w-lg w-full text-center">
-            <h1 class="text-4xl font-black text-green-900 mb-4 italic tracking-tighter">YEŞİLİ TERCİH ET 🌿</h1>
-            <p class="text-green-700 mb-10 text-lg font-semibold">Kaç kişi ormanları kurtaracak?</p>
-            
-            <div class="flex justify-center gap-6 mb-10">
+            <h1 class="text-4xl font-black text-green-900 mb-2 italic tracking-tighter">YEŞİLİ TERCİH ET 🌿</h1>
+            <p class="text-green-700 mb-8 font-semibold">Doğa ve Ekonomi Dengesi</p>
+            <label class="block text-sm font-bold text-gray-400 mb-6 uppercase tracking-widest">Oyuncu Sayısını Seçin</label>
+            <div class="flex justify-center gap-6">
                 <button onclick="startGame(2)" class="w-16 h-16 rounded-2xl bg-green-50 hover:bg-green-600 hover:text-white border-2 border-green-600 text-2xl text-green-800 font-black transition-all">2</button>
                 <button onclick="startGame(3)" class="w-16 h-16 rounded-2xl bg-green-50 hover:bg-green-600 hover:text-white border-2 border-green-600 text-2xl text-green-800 font-black transition-all">3</button>
                 <button onclick="startGame(4)" class="w-16 h-16 rounded-2xl bg-green-50 hover:bg-green-600 hover:text-white border-2 border-green-600 text-2xl text-green-800 font-black transition-all">4</button>
@@ -157,11 +143,10 @@
 
     <div id="game-container" class="hidden max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- Oyuncu Panelleri -->
+        <!-- Sol Panel -->
         <div class="lg:col-span-3 space-y-4">
             <div id="player-panels" class="space-y-3"></div>
-
-            <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-8 border-green-600">
+            <div class="bg-white p-6 rounded-[24px] shadow-xl border-t-8 border-green-600">
                 <div class="flex items-center justify-between mb-4">
                     <span class="text-xs font-black text-gray-400 uppercase tracking-widest">Sıradaki</span>
                     <span id="current-player-name" class="text-xl font-black"></span>
@@ -179,89 +164,142 @@
             </div>
         </div>
 
-        <!-- Oyun Tahtası -->
+        <!-- Orta Panel -->
         <div class="lg:col-span-6">
             <div id="game-board" class="board-container">
                 <div class="center-area">
-                    <h2 class="text-2xl md:text-4xl font-black text-green-900 text-center tracking-tighter leading-tight mb-2">YEŞİLİ TERCİH ET</h2>
+                    <h2 class="text-2xl md:text-4xl font-black text-green-900 text-center tracking-tighter leading-none mb-2 uppercase">YEŞİLİ TERCİH ET</h2>
                     <span class="text-5xl mb-2">🌿</span>
-                    <p class="text-[10px] font-bold text-green-800 uppercase tracking-widest text-center">Doğa ve Ekonomi Dengesi</p>
-                    <p class="text-[10px] font-bold text-green-800 uppercase tracking-widest text-center mt-1">DİJİTALLEŞEN COĞRAFYA</p>
+                    <p class="text-[11px] font-bold text-green-800 uppercase tracking-widest text-center">Doğa ve Ekonomi Dengesi</p>
+                    <p class="text-[10px] font-black text-green-700 uppercase tracking-[0.2em] text-center mt-1 border-t border-green-300 pt-1">DİJİTALLEŞEN COĞRAFYA</p>
                 </div>
             </div>
         </div>
 
-        <!-- Bilgi ve Log -->
+        <!-- Sağ Panel -->
         <div class="lg:col-span-3 space-y-4">
             <div class="bg-white p-5 rounded-[24px] shadow-xl border-l-8 border-amber-500">
-                <h3 class="font-black text-gray-800 mb-4 text-xs tracking-widest uppercase"><i class="fas fa-bullseye mr-2"></i> Hedefler</h3>
+                <h3 class="font-black text-gray-800 mb-4 text-xs tracking-widest uppercase italic"><i class="fas fa-bullseye mr-2"></i> Kazanan Ol!</h3>
                 <div class="space-y-2">
                     <div class="flex items-center justify-between bg-green-50 p-2 rounded-xl">
-                        <span class="text-[10px] text-green-800 font-bold uppercase tracking-tight">Çevre</span>
+                        <span class="text-[10px] text-green-800 font-bold uppercase tracking-tight">Çevre Hedefi</span>
                         <span class="text-sm font-black text-green-900">10+</span>
                     </div>
                     <div class="flex items-center justify-between bg-amber-50 p-2 rounded-xl">
-                        <span class="text-[10px] text-amber-800 font-bold uppercase tracking-tight">Servet</span>
+                        <span class="text-[10px] text-amber-800 font-bold uppercase tracking-tight">Servet Hedefi</span>
                         <span class="text-sm font-black text-amber-900">1.000+</span>
                     </div>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-[24px] shadow-xl h-[350px] flex flex-col border-b-8 border-gray-200">
-                <h3 class="text-xs font-black text-gray-400 uppercase mb-3 border-b pb-2">Oyun Akışı</h3>
-                <div id="log-content" class="text-[10px] space-y-2 text-gray-600 overflow-y-auto pr-2">
-                    <div class="italic text-green-700 font-bold bg-green-50 p-3 rounded-xl">Oyun başladı!</div>
+            <div class="bg-white p-5 rounded-[24px] shadow-xl h-[350px] flex flex-col">
+                <h3 class="text-xs font-black text-gray-400 uppercase mb-3 border-b pb-2 tracking-widest">Oyun Akışı</h3>
+                <div id="log-content" class="text-[11px] space-y-2 text-gray-600 overflow-y-auto pr-2">
+                    <div class="italic text-green-700 font-bold bg-green-50 p-3 rounded-xl">Eğitici yağmur ormanları simülasyonu başladı.</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Karar Modalı -->
-    <div id="choice-modal" class="modal-bg fixed inset-0 z-[200] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-xl rounded-[40px] shadow-2xl overflow-hidden">
-            <div id="modal-header" class="p-8 bg-green-600 text-white font-black text-2xl flex justify-between items-center">
-                <span id="modal-title">Karar Vakti</span>
-                <i class="fas fa-balance-scale"></i>
+    <!-- Senaryo Modalı -->
+    <div id="scenario-modal" class="modal-bg fixed inset-0 z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div id="modal-header" class="p-8 bg-green-600 text-white font-black text-2xl flex justify-between items-center shrink-0">
+                <span id="modal-title">FARKINDALIK SENARYOSU</span>
+                <i class="fas fa-globe-americas"></i>
             </div>
-            <div class="p-8">
-                <p id="modal-desc" class="text-gray-700 mb-8 text-lg leading-relaxed font-bold italic"></p>
+            <div class="p-8 overflow-y-auto">
+                <p id="modal-desc" class="text-gray-700 mb-8 text-lg leading-relaxed font-medium italic"></p>
                 <div id="modal-options" class="space-y-4"></div>
             </div>
         </div>
     </div>
 
+    <!-- Kazanma Modalı -->
     <div id="win-modal" class="modal-bg fixed inset-0 z-[300] hidden flex items-center justify-center p-4">
-        <div class="bg-white p-12 rounded-[50px] text-center shadow-2xl max-w-md border-t-[12px] border-green-500">
-            <div class="text-8xl mb-8">🌳</div>
-            <h2 id="winner-text" class="text-4xl font-black text-green-900 mb-4 tracking-tighter">ZAFER!</h2>
-            <button onclick="location.reload()" class="w-full bg-green-600 text-white py-6 rounded-2xl font-black text-2xl shadow-xl transition-all">TEKRAR OYNA</button>
+        <div class="bg-white p-16 rounded-[60px] text-center shadow-2xl max-w-md border-t-[12px] border-green-500">
+            <div class="text-9xl mb-10 transform hover:scale-110 transition-transform">🌍</div>
+            <h2 id="winner-text" class="text-4xl font-black text-green-900 mb-6 tracking-tighter">ZAFER!</h2>
+            <p class="text-gray-600 mb-10 text-xl font-semibold">Gelecek nesillere yeşil bir dünya bıraktınız.</p>
+            <button onclick="location.reload()" class="w-full bg-green-600 text-white py-6 rounded-3xl font-black text-2xl shadow-xl transition-all">TEKRAR BAŞLA</button>
         </div>
     </div>
 
     <script>
+        // BELGEDEKİ DETAYLI SENARYOLAR
         const choiceCards = [
             {
-                title: "Tarım Bakanı",
-                desc: "Tayland Tarım Bakanısın. Gıda krizini çözemezsen koltuğun tehlikede. Ormanlar mı, görev mi?",
+                title: "TAYLAND TARIM BAKANI",
+                desc: "Tayland Tarım Bakanısın. Artan nüfusu besleme konusundaki ilerleme eksikliği nedeniyle işin tehlikede. Halkın gıda ihtiyacını karşılamak zorundasın. Ne yapacaksın?",
                 options: [
-                    { text: "Ormanları keserek tarım alanı aç (-1 Çevre, +250 Servet)", env: -1, wealth: 250 },
-                    { text: "Borç alarak gıda ithal et (+100 Servet)", env: 0, wealth: 100 },
-                    { text: "İstifa et ve ormanı savun (+3 Çevre, -200 Servet)", env: 3, wealth: -200 }
+                    { text: "Daha fazla gıda üretmek için umutsuz bir önlem olarak yağmur ormanı arazisini yok etmeye karar ver. (-1 Çevre, +250 Servet)", env: -1, wealth: 250 },
+                    { text: "Tartışmalı bir siyasi hamle yap ve sanayileşmiş ülkelerden yardım isteyerek borca gir. (+100 Servet)", env: 0, wealth: 100 },
+                    { text: "Çevre için dik dur ve görevinden istifa et; daha fazla orman yok edilmesine karşı çık. (+3 Çevre, -200 Servet)", env: 3, wealth: -200 }
                 ]
             },
             {
-                title: "Altın Madencisi",
-                desc: "Küçük bir maden işletiyorsun. Yeni yasalar kârını yok edebilir. Ne yapacaksın?",
+                title: "AMAZON'DA ALTIN MADENCİLİĞİ",
+                desc: "Amazon bölgesinde küçük ölçekli bir madencilik operasyonu yürütüyorsun; altın cevheri aramak için dere yataklarını buldozerle kazıyorsun. Hükümet yeni çevre düzenlemeleri getirdi. Bu düzenlemelere uymak neredeyse bir yıllık kârını kaybetmene neden olacak.",
                 options: [
-                    { text: "Yasalara uy ve doğayı kurtar (+2 Çevre, -250 Servet)", env: 2, wealth: -250 },
-                    { text: "Denetimi torpille ertele (+1 Çevre, -100 Servet)", env: 1, wealth: -100 },
-                    { text: "Gizli ve yasadışı maden kur (-2 Çevre, +250 Servet)", env: -2, wealth: 250 }
+                    { text: "Düzenlemelere harfiyen uy ve kârından vazgeç. (+2 Çevre, -250 Servet)", env: 2, wealth: -250 },
+                    { text: "Yerel yetkililerle aranı iyi tutarak denetimi bir yıl ertelet. (+1 Çevre, -100 Servet)", env: 1, wealth: -100 },
+                    { text: "Ormanın derinliklerine git ve gizli, yasadışı bir maden kur; çevre yasalarını görmezden gel. (-2 Çevre, +250 Servet)", env: -2, wealth: 250 }
+                ]
+            },
+            {
+                title: "GÖÇMEN KÖYLÜLERİN LİDERİ",
+                desc: "Fildişi Sahili'nde bir grup göçmen köylünün liderisin. Nüfus baskısı ve orman arazisinin aşırı kullanımı nedeniyle halkın yakıt, yiyecek ve barınak için ormanda dolaşmak zorunda kalıyor. Şimdi çevre grupları, arazinin korunması için bu yaşam tarzından vazgeçmenizi istiyor.",
+                options: [
+                    { text: "Uygulamalarınızın ormana zarar verdiğini kabul et ve halkını nasıl hayatta kalacağını bilmediğin bir yere taşı. (+2 Çevre, -300 Servet)", env: 2, wealth: -300 },
+                    { text: "Yaşam tarzını sürdürmek için elinden geldiğince topraktan yaşamaya devam et ve hakların için dilekçe ver. (-1 Çevre, +150 Servet)", env: -1, wealth: 150 }
+                ]
+            },
+            {
+                title: "SUNNY DRINKS BAŞKANI",
+                desc: "Sunny Drinks A.Ş.'nin başkanısın. Şirketinin amiral gemisi ürünü 'Truly Fruity' yeterince tropikal meyve aromasına sahip olmadığı için satmıyor. Pazar payını artırmak için bir karar vermelisin.",
+                options: [
+                    { text: "Tedarikçini, ek arazi satın almadan mahsul çıktısını üç katına çıkarmaya 'teşvik' et. (-2 Çevre, +250 Servet)", env: -2, wealth: 250 },
+                    { text: "Sürdürülebilir şekilde hasat edilen meyveler için fazladan para harca ve bunu yeni bir reklam kampanyasına dönüştür. (+1 Çevre, 0 Servet)", env: 1, wealth: 0 },
+                    { text: "Zararlarını kes ve bu ürün hattını tamamen bırakarak popüler 'Prunetta Punch' içeceğine odaklan. (+50 Servet)", env: 0, wealth: 50 }
                 ]
             }
         ];
 
         const riskCards = [
-            { desc: "Zehirli sızıntı! 500 Servetin yoksa doğayı temizleyemezsin. (-2 Çevre)", check: (p) => p.wealth >= 500 ? {env:0, wealth:0, msg:"Müdahale edildi!"} : {env:-2, wealth:0, msg:"Doğa zehirlendi!"} },
-            { desc: "Büyük orman yangını! 5+ Çevre puanın varsa ormanın bakımlı olduğu için güvendesin. Yoksa -300 Servet.", check: (p) => p.env >= 5 ? {env:0, wealth:0, msg:"Ormanın seni korudu!"} : {env:0, wealth:-300, msg:"Büyük zarar!"} }
+            { 
+                title: "GERİLLA SALDIRISI",
+                desc: "Kongo Havzası'nda iç savaşta savaşan gerillalar ailenize saldırdı. Maalesef oğlunuz ağır yaralandı. Tıbbi yardım alabilmek için kaynağa ihtiyacın var.", 
+                check: (p) => p.wealth >= 400 ? {env:0, wealth:0, msg:"400 servet puanın sayesinde tıbbi yardım aldınız ve oğlunuz iyileşti."} : {env:-2, wealth:0, msg:"Yeterli servet puanın olmadığı için oğlun hayatını kaybetti, iş gücü kaybı nedeniyle ormanı odunculara satmak zorunda kaldınız."} 
+            },
+            { 
+                title: "HİMALAYA TAHRİBATI",
+                desc: "Himalaya dağlarındaki ormansızlaştırma uygulamaların Hindistan'daki 12 milyon dönümlük arazinin zarar görmesine katkıda bulundu.", 
+                result: {env:-1, wealth:0, msg: "Doğa intikamını alıyor. (-1 Çevre Puanı)"} 
+            },
+            { 
+                title: "ŞANSLI GÜNÜN!",
+                desc: "Yağmur ormanlarını kurtarmakla ilgili önemli bir konferansa giderken uçakta ünlü bir rock yıldızının yanına oturdun. Onu konferansa katılmaya ve davanı yeni albümünde tanıtmaya ikna ettin.", 
+                result: {env:2, wealth:0, msg: "Farkındalık tavan yaptı! (+2 Çevre Puanı)"} 
+            },
+            { 
+                title: "YAĞMUR ORMANI KOZMETİKLERİ",
+                desc: "Yeni 'Yağmur Ormanı Kozmetikleri' hattınız büyük ses getirdi. Hem satışlar çok iyi gidiyor hem de sürdürülebilir hasat konusunda farkındalık yaratıyor.", 
+                result: {env:1, wealth:100, msg: "Hem kazan hem koru! (+1 Çevre, +100 Servet)"} 
+            },
+            { 
+                title: "IVY LEAGUE MEZUNU",
+                desc: "Zengin bir mezun olarak, bir grup öğrenci koruma biyolojisi programı başlatmak için size ulaştı. Onların çabalarını desteklemek istiyor musun?", 
+                trade: {cost: 150, gain: 2, msg: "Eğitime verdiğin destek meyvesini verdi. (150 Servet karşılığı +2 Çevre)"} 
+            },
+            { 
+                title: "SIĞIR OTLAKLARI",
+                desc: "Sığırların için otlak sağlamak amacıyla yağmur ormanlarını tamamen kestin. Ancak bir yıl içinde arazi, tüm sığırlarını öldüren zehirli yabani otlar tarafından istila edildi.", 
+                result: {env:-1, wealth:-100, msg: "Ormansızlaşmanın bedeli ağır oldu. (-1 Çevre, -100 Servet)"} 
+            },
+            { 
+                title: "DOĞA İÇİN BORÇ",
+                desc: "Bir ABD bankası ile Kongo hükümeti arasındaki 'doğa için borç' takası teklifiniz kabul edildi. Tebrikler!", 
+                result: {env:1, wealth:0, msg: "Büyük çaplı bir koruma başarısı! (+1 Çevre)"} 
+            }
         ];
 
         const boardData = [
@@ -269,9 +307,9 @@
             { text: "BM çabalarınızı övdü (+1 Çevre)", type: "event", res: {env:1, wealth:0} },
             { text: "SEÇİM", type: "choice" },
             { text: "RİSK", type: "risk" },
-            { text: "Teşvik ödülü kazandınız (+50 Servet)", type: "event", res: {env:0, wealth:50} },
+            { text: "Hükümetten Teşvik Ödülü (+50 Servet)", type: "event", res: {env:0, wealth:50} },
             { text: "RİSK", type: "risk" },
-            { text: "Başkan ödül veriyor (6+ Çevre ise +100 Servet)", type: "event", check: (p) => p.env >= 6 ? {env:0, wealth:100} : {env:0, wealth:0} },
+            { text: "Başkan Ödül Veriyor (6+ Çevre ise +100 Servet)", type: "event", check: (p) => p.env >= 6 ? {env:0, wealth:100} : {env:0, wealth:0} },
             { text: "RİSK", type: "risk" },
             { text: "SEÇİM", type: "choice" },
             { text: "Para Kazan $$$ (+50 Servet)", type: "event", res: {env:0, wealth:50} },
@@ -279,14 +317,14 @@
             { text: "RİSK", type: "risk" },
             { text: "Risk mi, Seçim mi?", type: "choice" },
             { text: "SEÇİM", type: "choice" },
-            { text: "Çamur kayması yaşandı (-75 Servet)", type: "event", res: {env:0, wealth:-75} },
+            { text: "Toprak Erozyonu / Çamur Kayması (-75 Servet)", type: "event", res: {env:0, wealth:-75} },
             { text: "RİSK", type: "risk" },
-            { text: "Time makalenizi yayınladı (+1 Çevre)", type: "event", res: {env:1, wealth:0} },
+            { text: "Time Makalenizi Yayınladı (+1 Çevre)", type: "event", res: {env:1, wealth:0} },
             { text: "SEÇİM", type: "choice" },
             { text: "RİSK", type: "risk" },
             { text: "RİSK", type: "risk" },
             { text: "Rekor Fındık Hasadı! (+100 Servet)", type: "event", res: {env:0, wealth:100} },
-            { text: "Tatil - Bir tur bekle (Pas Geç)", type: "event", skip: true },
+            { text: "Uluslararası Tatil - 1 Tur Bekle", type: "event", skip: true },
             { text: "RİSK", type: "risk" },
             { text: "SEÇİM", type: "choice" }
         ];
@@ -332,19 +370,20 @@
             container.innerHTML = '';
             players.forEach((p, i) => {
                 const panel = document.createElement('div');
-                panel.className = `bg-white p-4 rounded-[20px] shadow-lg border-l-[10px] transition-all duration-500 ${turn === i ? 'active-turn' : 'opacity-60'}`;
+                panel.className = `bg-white p-4 rounded-[24px] shadow-lg border-l-[10px] transition-all duration-500 ${turn === i ? 'active-turn' : 'opacity-60'}`;
                 panel.style.borderColor = p.color;
                 panel.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
                         <span class="font-black text-gray-800 text-sm uppercase tracking-tight">${p.name}</span>
+                        ${turn === i ? '<span class="text-[10px] bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full font-black animate-pulse">SIRA SİZDE</span>' : ''}
                     </div>
                     <div class="flex gap-4">
                         <div class="flex-1 bg-green-50 p-2 rounded-xl text-center">
-                            <div class="text-[9px] text-green-600 font-bold uppercase tracking-widest">Çevre</div>
+                            <div class="text-[9px] text-green-600 font-bold uppercase">Çevre</div>
                             <div class="text-base font-black text-green-900">${p.env}</div>
                         </div>
                         <div class="flex-1 bg-amber-50 p-2 rounded-xl text-center">
-                            <div class="text-[9px] text-amber-600 font-bold uppercase tracking-widest">Servet</div>
+                            <div class="text-[9px] text-amber-600 font-bold uppercase">Servet</div>
                             <div class="text-base font-black text-amber-900">${p.wealth}</div>
                         </div>
                     </div>
@@ -360,8 +399,8 @@
                     document.getElementById('game-board').appendChild(token);
                 }
                 const tile = document.getElementById(`tile-${p.pos}`);
-                token.style.top = `${tile.offsetTop + (i * 3) + 10}px`;
-                token.style.left = `${tile.offsetLeft + (i * 3) + 10}px`;
+                token.style.top = `${tile.offsetTop + (i * 3) + 12}px`;
+                token.style.left = `${tile.offsetLeft + (i * 3) + 12}px`;
             });
         }
 
@@ -376,7 +415,7 @@
             if (isRolling) return;
             const p = players[turn];
             if (p.skipTurn) {
-                log(`${p.name} pas geçiyor (Tatil).`);
+                log(`${p.name} tatilde olduğu için pas geçti.`);
                 p.skipTurn = false;
                 nextTurn();
                 return;
@@ -394,7 +433,7 @@
             for (let i = 0; i < roll; i++) {
                 p.pos = (p.pos + 1) % boardData.length;
                 renderPlayers();
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise(r => setTimeout(r, 180));
             }
             handleLanding();
         }
@@ -402,7 +441,7 @@
         function handleLanding() {
             const p = players[turn];
             const tile = boardData[p.pos];
-            log(`${p.name}: ${tile.text.substring(0, 40)}...`);
+            log(`${p.name}: ${tile.text.substring(0, 35)}...`);
             if (tile.type === 'choice') {
                 showModal('choice');
             } else if (tile.type === 'risk') {
@@ -417,42 +456,59 @@
 
         function showModal(type) {
             const p = players[turn];
-            const modal = document.getElementById('choice-modal');
+            const modal = document.getElementById('scenario-modal');
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
             const opts = document.getElementById('modal-options');
+            const header = document.getElementById('modal-header');
             opts.innerHTML = '';
+            
             if (type === 'choice') {
                 const card = choiceCards[Math.floor(Math.random() * choiceCards.length)];
-                title.innerText = "Karar Senin: " + card.title;
+                header.className = "p-8 bg-green-600 text-white font-black text-2xl flex justify-between items-center shrink-0";
+                title.innerText = "SEÇİM: " + card.title;
                 desc.innerText = card.desc;
                 card.options.forEach(o => {
                     const btn = document.createElement('button');
-                    btn.className = "w-full text-left p-5 border-2 border-gray-100 rounded-2xl hover:border-green-500 hover:bg-green-50 font-bold transition-all shadow-md active:scale-95";
+                    btn.className = "w-full text-left p-5 border-2 border-gray-100 rounded-2xl hover:border-green-500 hover:bg-green-50 text-sm font-bold transition-all shadow-md active:scale-95";
                     btn.innerText = o.text;
                     btn.onclick = () => {
-                        if (p.wealth + o.wealth < 0) { alert("Bütçeniz yetersiz!"); return; }
-                        p.env += o.env; p.wealth += o.wealth; closeModal();
+                        if (p.wealth + o.wealth < 0) { alert("Bütçeniz buna izin vermiyor!"); return; }
+                        p.env += o.env; p.wealth += o.wealth; log(`${p.name} kritik bir karar verdi.`); closeModal();
                     };
                     opts.appendChild(btn);
                 });
             } else {
                 const card = riskCards[Math.floor(Math.random() * riskCards.length)];
-                title.innerText = "Risk!";
+                header.className = "p-8 bg-rose-600 text-white font-black text-2xl flex justify-between items-center shrink-0";
+                title.innerText = "RİSK: " + card.title;
                 desc.innerText = card.desc;
-                const btn = document.createElement('button');
-                btn.className = "w-full p-5 bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl hover:bg-rose-700 active:scale-95";
-                btn.innerText = "Kabul Et";
-                btn.onclick = () => {
+                
+                if(card.trade) {
+                    const tradeBtn = document.createElement('button');
+                    tradeBtn.className = "w-full p-5 bg-green-600 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95";
+                    tradeBtn.innerText = `DESTEKLE (${card.trade.cost} Servet)`;
+                    tradeBtn.onclick = () => {
+                        if(p.wealth < card.trade.cost) { alert("Yeterli servet puanınız yok!"); return; }
+                        p.env += card.trade.gain; p.wealth -= card.trade.cost; log(`${p.name}: ${card.trade.msg}`); closeModal();
+                    }
+                    opts.appendChild(tradeBtn);
+                }
+
+                const okBtn = document.createElement('button');
+                okBtn.className = "w-full p-5 bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95";
+                okBtn.innerText = card.trade ? "PAS GEÇ" : "KABUL ET";
+                okBtn.onclick = () => {
                     let r = card.check ? card.check(p) : card.result;
-                    p.env += r.env; p.wealth += r.wealth; closeModal();
+                    if(r) { p.env += r.env || 0; p.wealth += r.wealth || 0; log(`${p.name}: ${r.msg || ''}`); }
+                    closeModal();
                 };
-                opts.appendChild(btn);
+                opts.appendChild(okBtn);
             }
             modal.classList.remove('hidden');
         }
 
-        function closeModal() { document.getElementById('choice-modal').classList.add('hidden'); checkWin(); nextTurn(); }
+        function closeModal() { document.getElementById('scenario-modal').classList.add('hidden'); checkWin(); nextTurn(); }
         function nextTurn() { turn = (turn + 1) % players.length; renderPlayers(); updateTurnUI(); isRolling = false; }
         function checkWin() {
             players.forEach(p => {
