@@ -266,11 +266,6 @@
 
         const riskCards = [
             { 
-                title: "GERİLLA SALDIRISI",
-                desc: "Kongo Havzası'nda iç savaşta savaşanlar ailenize saldırdı. Maalesef oğlunuz yaralandı. Tıbbi yardım alabilmek için kaynağa ihtiyacın var.", 
-                check: (p) => p.wealth >= 400 ? {env:0, wealth:0, msg:"400 servet puanın sayesinde tıbbi yardım aldınız ve oğlunuz iyileşti."} : {env:-2, wealth:0, msg:"Yeterli servet puanın olmadığı için oğlun hayatını kaybetti, iş gücü kaybı nedeniyle ormanı odunculara satmak zorunda kaldınız."} 
-            },
-            { 
                 title: "HİMALAYA TAHRİBATI",
                 desc: "Himalaya dağlarındaki ormansızlaştırma uygulamaların Hindistan'daki 12 milyon dönümlük arazinin zarar görmesine katkıda bulundu.", 
                 result: {env:-1, wealth:0, msg: "Doğa intikamını alıyor. (-1 Çevre Puanı)"} 
