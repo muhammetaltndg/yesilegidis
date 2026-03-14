@@ -133,7 +133,6 @@
 </head>
 <body class="p-2 md:p-6">
 
-    <!-- Kurulum Ekranı -->
     <div id="setup-screen" class="fixed inset-0 z-[100] bg-green-950 flex items-center justify-center p-4">
         <div class="bg-white p-10 rounded-[40px] shadow-2xl max-w-xl w-full text-center">
             <h1 class="text-4xl font-black text-green-900 mb-2 italic tracking-tighter">YEŞİLİ TERCİH ET 🌿</h1>
@@ -157,7 +156,6 @@
     </div>
 
     <div id="game-container" class="hidden max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <!-- Sol Panel -->
         <div class="lg:col-span-3 space-y-4 max-h-[85vh] overflow-y-auto pr-2">
             <div id="player-panels" class="space-y-3"></div>
             <div class="bg-white p-6 rounded-[24px] shadow-xl border-t-8 border-green-600 sticky bottom-0">
@@ -178,7 +176,6 @@
             </div>
         </div>
 
-        <!-- Orta Panel -->
         <div class="lg:col-span-6">
             <div id="game-board" class="board-container">
                 <div class="center-area">
@@ -190,7 +187,6 @@
             </div>
         </div>
 
-        <!-- Sağ Panel -->
         <div class="lg:col-span-3 space-y-4">
             <div class="bg-white p-5 rounded-[24px] shadow-xl border-l-8 border-amber-500">
                 <h3 class="font-black text-gray-800 mb-4 text-xs tracking-widest uppercase italic"><i class="fas fa-bullseye mr-2"></i> Hedefler</h3>
@@ -214,7 +210,6 @@
         </div>
     </div>
 
-    <!-- Senaryo Modalı -->
     <div id="scenario-modal" class="modal-bg fixed inset-0 z-[200] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div id="modal-header" class="p-8 bg-green-600 text-white font-black text-2xl flex justify-between items-center shrink-0">
@@ -228,7 +223,6 @@
         </div>
     </div>
 
-    <!-- Kazanma Modalı -->
     <div id="win-modal" class="modal-bg fixed inset-0 z-[300] hidden flex items-center justify-center p-4">
         <div class="bg-white p-10 rounded-[60px] text-center shadow-2xl max-w-xl border-t-[12px] border-green-500 overflow-y-auto max-h-[90vh]">
             <div class="text-7xl mb-6">🏆</div>
@@ -237,8 +231,7 @@
             <div class="bg-gray-50 rounded-3xl p-6 mb-8 text-left">
                 <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 border-b pb-2">Final Puan Tablosu</h3>
                 <div id="final-scoreboard-list">
-                    <!-- Skorlar JS ile buraya eklenecek -->
-                </div>
+                    </div>
             </div>
 
             <button onclick="location.reload()" class="w-full bg-green-600 text-white py-6 rounded-3xl font-black text-2xl shadow-xl transition-all">YENİDEN BAŞLA</button>
@@ -262,13 +255,13 @@
         ];
 
         const riskCards = [
-            { title: "ORMAN TAHRİBATI", desc: "HMalezya dağlarındaki ormansızlaştırma uygulamalarınız, Malezya'da 5 milyon dönüm arazinin zarar görmesine neden oldu (-1 çevresel puan).", result: {env:-1, wealth:0, msg: "Doğa intikam alıyor. (-1 Çevre)"} },
+            { title: "ORMAN TAHRİBATI", desc: "Malezya dağlarındaki ormansızlaştırma uygulamalarınız, Malezya'da 5 milyon dönüm arazinin zarar görmesine neden oldu (-1 çevresel puan).", result: {env:-1, wealth:0, msg: "Doğa intikam alıyor. (-1 Çevre)"} },
             { title: "ŞANSLI GÜNÜN!", desc: "Bugün şanslı gününüz! Yağmur ormanlarını kurtarma konulu önemli bir konferansa giderken uçakta ünlü bir rock yıldızının yanına oturuyorsunuz. Onu hem konferansa katılmaya hem de bir sonraki albümünde çevre mücadelenizi tanıtmaya ikna ediyorsunuz (+2 çevre puanı).", result: {env:2, wealth:0, msg: "Farkındalık tavan yaptı! (+2 Çevre)"} },
-            { title: "KOZMETİK HATTI", desc: "Yeni "yağmur ormanı kozmetikleri" seriniz büyük bir başarı yakaladı. Sadece iyi satmakla kalmıyor (+100 zenginlik puanı), aynı zamanda yağmur ormanlarının yok edilmesi konusunda farkındalık arttırıyor ve sürdürülebilir hasadı teşvik ediyor (+1 çevre puanı).", result: {env:1, wealth:100, msg: "Hem kazan hem koru! (+1 Çevre, +100 Servet)"} },
+            { title: "KOZMETİK HATTI", desc: "Yeni 'yağmur ormanı kozmetikleri' seriniz büyük bir başarı yakaladı. Sadece iyi satmakla kalmıyor (+100 zenginlik puanı), aynı zamanda yağmur ormanlarının yok edilmesi konusunda farkındalık arttırıyor ve sürdürülebilir hasadı teşvik ediyor (+1 çevre puanı).", result: {env:1, wealth:100, msg: "Hem kazan hem koru! (+1 Çevre, +100 Servet)"} },
             { title: "COĞRAFİ PROJE DESTEĞİ", desc: "Altundağ Üniversitesi'nin varlıklı bir mezunu olarak, bir grup öğrenci size coğrafi bir koruma projesi başlatma girişiminde bulunuyor. Eğer onların çabalarını desteklemek isterseniz, 150 servet puanınızı 2 çevre puanı karşılığında takas edebilirsiniz.", trade: {cost: 150, gain: 2, msg: "Eğitime verdiğin destek meyvesini verdi. (+2 Çevre)"} },
             { title: "SIĞIR OTLAKLARI", desc: "Sığırlarınız için otlak sağlamak amacıyla yağmur ormanını tamamen temizlediniz. Ancak bir yıl içinde, arazi zehirli yabani otlar tarafından istila edildi ve bu da tüm sığırlarınızın ölümüne neden oldu (-1 çevre puanı, -100 zenginlik puanı).", result: {env:-1, wealth:-100, msg: "Bedeli ağır oldu. (-1 Çevre, -100 Servet)"} },
-            { title: "DOĞA İÇİN BORÇ", desc: "Tebrikler! Türkiye bankası ile Kongo hükümeti arasında önerdiğiniz "doğa için borç" ticareti kabul edildi (+1 çevre puanı).", result: {env:1, wealth:0, msg: "Koruma başarısı! (+1 Çevre)"} },
-            { title: "GEÇİMLİK ÇİFTÇİ", desc: "Yağmur ormanındaki küçük arazinizden geçiminizi sağlamaya çalışan geçim dersi olan bir çiftçisiniz. Büyük bir sığır yetiştiricisi, arazinizi satın alıp burayı otlak alanına çevirmek için ormanı kesmek istemektedir. Eğer 500 servet puanınız varsa, arazinizi satmaya karşı koyabilirsiniz (+1 çevre puanı kazanırsınız). Ancak 500 servet puanından daha azına sahipseniz, arazinizi satmak zorunda kalırsınız (-1 çevre puanı kaybedersiniz).", check: (p) => p.wealth >= 500 ? {env:1, wealth:0, msg: "Arazini korudun! (+1 Çevre)"} : {env:-1, wealth:0, msg: "Satmak zorunda kaldın. (-1 Çevre)"} },
+            { title: "DOĞA İÇİN BORÇ", desc: "Tebrikler! Türkiye bankası ile Kongo hükümeti arasında önerdiğiniz 'doğa için borç' ticareti kabul edildi (+1 çevre puanı).", result: {env:1, wealth:0, msg: "Koruma başarısı! (+1 Çevre)"} },
+            { title: "GEÇİMLİK ÇİFTÇİ", desc: "Yağmur ormanındaki küçük arazinizden geçiminizi sağlamaya çalışan bir çiftçisiniz. Büyük bir sığır yetiştiricisi, arazinizi satın alıp burayı otlak alanına çevirmek için ormanı kesmek istemektedir. Eğer 500 servet puanınız varsa, arazinizi satmaya karşı koyabilirsiniz (+1 çevre puanı kazanırsınız). Ancak 500 servet puanından daha azına sahipseniz, arazinizi satmak zorunda kalırsınız (-1 çevre puanı kaybedersiniz).", check: (p) => p.wealth >= 500 ? {env:1, wealth:0, msg: "Arazini korudun! (+1 Çevre)"} : {env:-1, wealth:0, msg: "Satmak zorunda kaldın. (-1 Çevre)"} },
             { title: "YAKIT SIZINTISI", desc: "Uygunsuz bakım nedeniyle, ormancılık ekipmanları için kullanılan yakıt deposundan su kaynağına zehirli maddeler sızıyor. Önemli hasar oluşmadan önce sorunu gidermek için 500 servet puanınız yoksa 2 çevre puanı kaybedersin.", check: (p) => p.wealth >= 500 ? {env:0, wealth:0, msg: "Hızlıca tamir ettin."} : {env:-2, wealth:0, msg: "Doğa zehirlendi. (-2 Çevre)"} },
             { title: "ORMAN YANGINI", desc: "Endonezya'nın Doğu Kalimanton bölgesinde büyük bir orman yangını sürüyor. Eğer ağaç kesilmemiş ormanınız varsa (5 çevre puanı veya üzeri) güvendesiniz. Eğer ağaç kesilmiş ormanınız varsa, çok para kaybedersiniz (-300 zenginlik puanı).", check: (p) => p.env >= 5 ? {env:0, wealth:0, msg: "Ormanın dirençli çıktı."} : {env:0, wealth:-300, msg: "Çok şeyini kaybettin. (-300 Servet)"} },
             { title: "KÜRESEL ISINMA KOALİSYONU", desc: "Uluslararası Küresel Isınma Koalisyonu, yağmur ormanlarını korumaya adanmışlık gösterenlere mali yardım sunuyor. 5 veya daha fazla çevre puanınız varsa, 200 zenginlik puanı kazanırsınız.", check: (p) => p.env >= 5 ? {env:0, wealth:200, msg: "Ödülü kaptın! (+200 Servet)"} : {env:0, wealth:0, msg: "Ödül için yetersizsin."} }
@@ -316,6 +309,7 @@
         function startGame(count) {
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('game-container').classList.remove('hidden');
+            players = [];
             for (let i = 0; i < count; i++) {
                 players.push({ id: i + 1, pos: 0, env: 4, wealth: 400, color: colors[i], name: `Oyuncu ${i+1}`, skipTurn: false });
             }
@@ -326,6 +320,10 @@
 
         function initBoard() {
             const board = document.getElementById('game-board');
+            // Önceki board temizlenmeli
+            const existingTiles = board.querySelectorAll('.tile');
+            existingTiles.forEach(t => t.remove());
+
             layout.forEach((pos, idx) => {
                 const tile = document.createElement('div');
                 tile.className = `tile ${boardData[idx].type}-tile`;
@@ -371,9 +369,9 @@
                     document.getElementById('game-board').appendChild(token);
                 }
                 const tile = document.getElementById(`tile-${p.pos}`);
-                const offset = (i * 2) - (players.length);
-                token.style.top = `${tile.offsetTop + 15 + offset}px`;
-                token.style.left = `${tile.offsetLeft + 15 + offset}px`;
+                const offset = (i * 4);
+                token.style.top = `${tile.offsetTop + 10 + offset}px`;
+                token.style.left = `${tile.offsetLeft + 10 + offset}px`;
             });
         }
 
@@ -387,26 +385,22 @@
         async function rollDice() {
             if (isRolling) return;
             const p = players[turn];
-            if (p.skipTurn) {
-                log(`${p.name} tatilini bitirdi, sıra bir sonrakine geçiyor.`);
-                p.skipTurn = false;
-                nextTurn();
-                return;
-            }
             isRolling = true;
+            
             const dice = document.getElementById('dice-val');
             dice.classList.add('shake');
             let roll = 1;
-            for(let j=0; j<14; j++) {
+            for(let j=0; j<12; j++) {
                 roll = Math.floor(Math.random() * 6) + 1;
                 dice.setAttribute('data-value', roll);
-                await new Promise(r => setTimeout(r, 60));
+                await new Promise(r => setTimeout(r, 80));
             }
             dice.classList.remove('shake');
+            
             for (let i = 0; i < roll; i++) {
                 p.pos = (p.pos + 1) % boardData.length;
                 renderPlayers();
-                await new Promise(r => setTimeout(r, 180));
+                await new Promise(r => setTimeout(r, 200));
             }
             handleLanding();
         }
@@ -414,15 +408,23 @@
         function handleLanding() {
             const p = players[turn];
             const tile = boardData[p.pos];
-            log(`${p.name}: ${tile.text.substring(0, 30)}...`);
+            log(`${p.name}: ${tile.text}`);
+            
             if (tile.type === 'choice') {
                 showModal('choice');
             } else if (tile.type === 'risk') {
                 showModal('risk');
             } else {
-                if (tile.res) { p.env += tile.res.env || 0; p.wealth += tile.res.wealth || 0; } 
-                else if (tile.check) { const r = tile.check(p); p.env += r.env; p.wealth += r.wealth; }
-                checkWin(); nextTurn();
+                if (tile.res) { 
+                    p.env += tile.res.env || 0; 
+                    p.wealth += tile.res.wealth || 0; 
+                } else if (tile.check) { 
+                    const r = tile.check(p); 
+                    p.env += r.env; 
+                    p.wealth += r.wealth; 
+                }
+                checkWin(); 
+                nextTurn();
             }
         }
 
@@ -480,8 +482,18 @@
             modal.classList.remove('hidden');
         }
 
-        function closeModal() { document.getElementById('scenario-modal').classList.add('hidden'); checkWin(); nextTurn(); }
-        function nextTurn() { turn = (turn + 1) % players.length; renderPlayers(); updateTurnUI(); isRolling = false; }
+        function closeModal() { 
+            document.getElementById('scenario-modal').classList.add('hidden'); 
+            checkWin(); 
+            nextTurn(); 
+        }
+
+        function nextTurn() { 
+            turn = (turn + 1) % players.length; 
+            renderPlayers(); 
+            updateTurnUI(); 
+            isRolling = false; 
+        }
         
         function checkWin() {
             const winner = players.find(p => p.env >= 10 && p.wealth >= 1000);
@@ -517,6 +529,7 @@
             div.innerHTML = `<span class="text-green-600 mr-2">▶</span> <span>${msg}</span>`;
             content.prepend(div);
         }
+
         document.getElementById('roll-btn').onclick = rollDice;
     </script>
 </body>
